@@ -1,0 +1,219 @@
+'use client';
+
+import { useState, type FormEvent } from 'react';
+import Link from 'next/link';
+import { Phone, Mail, Send, ArrowRight, CheckCircle } from 'lucide-react';
+
+export default function ContactPage() {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    serviceInterest: '',
+    note: '',
+  });
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setSubmitted(true);
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  return (
+    <>
+      {/* Hero Section */}
+      <section className="hero-mesh noise-bg relative overflow-hidden">
+        <div className="relative z-10 mx-auto max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8 lg:py-40">
+          <div className="mx-auto max-w-3xl text-center">
+            <h1 className="font-display text-4xl leading-tight text-white sm:text-5xl lg:text-6xl">
+              Get in Touch with Click4Coverage
+            </h1>
+            <h3 className="mt-4 text-xl font-semibold text-accent sm:text-2xl">
+              We&apos;re Here to Help You!
+            </h3>
+            <p className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-navy-100/80 sm:text-xl">
+              Whether you have questions about our coverage plans or need assistance, our team is
+              ready to assist you. Reach out to us today!
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Info Cards */}
+      <section className="bg-white py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto grid max-w-2xl gap-6 sm:grid-cols-2">
+            <div className="flex items-center gap-4 rounded-2xl border-l-4 border-accent bg-white p-6 shadow-lg transition hover:shadow-xl">
+              <div className="inline-flex rounded-full bg-accent-muted p-3">
+                <Phone className="h-6 w-6 text-accent" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-navy-500">Call Us</p>
+                <a
+                  href="tel:+1-800-555-0199"
+                  className="text-lg font-bold text-navy-900 transition hover:text-accent"
+                >
+                  (800) 555-0199
+                </a>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4 rounded-2xl border-l-4 border-accent bg-white p-6 shadow-lg transition hover:shadow-xl">
+              <div className="inline-flex rounded-full bg-accent-muted p-3">
+                <Mail className="h-6 w-6 text-accent" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-navy-500">Email Us</p>
+                <a
+                  href="mailto:support@click4coverage.com"
+                  className="text-lg font-bold text-navy-900 transition hover:text-accent"
+                >
+                  support@click4coverage.com
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Form Section */}
+      <section className="bg-navy-50 py-24">
+        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+          <div className="rounded-2xl bg-white p-8 shadow-xl sm:p-12">
+            <div className="text-center">
+              <h2 className="font-display text-3xl tracking-tight text-navy-900 sm:text-4xl">
+                Get in Touch with Us
+              </h2>
+              <p className="mt-3 text-lg text-navy-600">
+                We value your feedback and inquiries. Please fill out our contact form to reach our
+                team for any questions or support.
+              </p>
+            </div>
+
+            {submitted ? (
+              <div className="mt-12 rounded-2xl border-2 border-accent/30 bg-accent-muted p-8 text-center">
+                <CheckCircle className="mx-auto h-12 w-12 text-accent" />
+                <h3 className="mt-4 font-display text-2xl text-navy-900">Thank You!</h3>
+                <p className="mt-2 text-lg text-navy-600">
+                  Your message has been received. Our team will get back to you shortly.
+                </p>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="mt-10 space-y-6">
+                {/* Name Field */}
+                <div>
+                  <label htmlFor="name" className="block text-sm font-semibold text-navy-900">
+                    Name
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    required
+                    value={formData.name}
+                    onChange={handleChange}
+                    placeholder="Your full name"
+                    className="mt-2 w-full rounded-xl border border-navy-100 px-4 py-3 text-navy-900 shadow-sm transition focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+                  />
+                </div>
+
+                {/* Email Field */}
+                <div>
+                  <label htmlFor="email" className="block text-sm font-semibold text-navy-900">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    required
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="you@example.com"
+                    className="mt-2 w-full rounded-xl border border-navy-100 px-4 py-3 text-navy-900 shadow-sm transition focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+                  />
+                </div>
+
+                {/* Service Interest Select */}
+                <div>
+                  <label
+                    htmlFor="serviceInterest"
+                    className="block text-sm font-semibold text-navy-900"
+                  >
+                    Service Interest
+                  </label>
+                  <select
+                    id="serviceInterest"
+                    name="serviceInterest"
+                    required
+                    value={formData.serviceInterest}
+                    onChange={handleChange}
+                    className="mt-2 w-full rounded-xl border border-navy-100 px-4 py-3 text-navy-900 shadow-sm transition focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+                  >
+                    <option value="" disabled>
+                      Select a service
+                    </option>
+                    <option value="auto">Auto Coverage</option>
+                    <option value="home">Home Coverage</option>
+                    <option value="both">Both</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+
+                {/* Note Textarea */}
+                <div>
+                  <label htmlFor="note" className="block text-sm font-semibold text-navy-900">
+                    Note
+                  </label>
+                  <textarea
+                    id="note"
+                    name="note"
+                    rows={5}
+                    value={formData.note}
+                    onChange={handleChange}
+                    placeholder="Tell us how we can help..."
+                    className="mt-2 w-full resize-none rounded-xl border border-navy-100 px-4 py-3 text-navy-900 shadow-sm transition focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
+                  />
+                </div>
+
+                {/* Submit Button */}
+                <button
+                  type="submit"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-accent px-8 py-4 text-lg font-bold text-navy-950 shadow-lg shadow-accent/20 transition hover:bg-accent-hover hover:scale-105 sm:w-auto"
+                >
+                  <Send className="h-5 w-5" />
+                  Submit
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="hero-mesh noise-bg relative py-24 text-center">
+        <div className="relative z-10 mx-auto max-w-3xl px-4">
+          <h2 className="font-display text-3xl text-white sm:text-4xl lg:text-5xl">
+            Need Assistance? Contact Us Today!
+          </h2>
+          <p className="mt-6 text-lg leading-relaxed text-navy-100/80">
+            Our dedicated team is here to answer your questions and help you find the perfect
+            coverage plan. Don&apos;t wait -- protect your investment now.
+          </p>
+          <Link
+            href="/quote"
+            className="group mt-10 inline-flex items-center gap-2 rounded-xl bg-accent px-10 py-4 text-lg font-bold text-navy-950 shadow-lg shadow-accent/20 transition hover:bg-accent-hover hover:scale-105"
+          >
+            Get a Quote
+            <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+          </Link>
+        </div>
+      </section>
+    </>
+  );
+}

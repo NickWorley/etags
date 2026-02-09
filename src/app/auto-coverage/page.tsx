@@ -1,0 +1,209 @@
+import type { Metadata } from 'next';
+import Link from 'next/link';
+import { Shield, DollarSign, ShieldCheck, Check, ArrowRight } from 'lucide-react';
+
+export const metadata: Metadata = {
+  title: 'Auto Coverage | Click for Coverage',
+  description:
+    'Explore our comprehensive vehicle service contract coverage tiers. From basic powertrain to complete bumper-to-bumper protection.',
+};
+
+/* ------------------------------------------------------------------ */
+/*  Tier data                                                          */
+/* ------------------------------------------------------------------ */
+
+const tiers = [
+  {
+    name: 'Essential',
+    tier: 1,
+    items: [
+      'Engine Coverage',
+      'Transmission Coverage',
+      'Transfer Case Coverage',
+      'AWD Mechanism Coverage',
+    ],
+    border: 'border-navy-100',
+    extra: '',
+    badge: null,
+  },
+  {
+    name: 'Essential Plus',
+    tier: 2,
+    items: [
+      'Everything in Tier 1, PLUS:',
+      'Water Pump',
+      'Oil Pump',
+      'Fuel System',
+      'Timing Chain',
+      'Electrical System',
+      'A/C System',
+    ],
+    border: 'border-navy-200',
+    extra: '',
+    badge: null,
+  },
+  {
+    name: 'Premium',
+    tier: 3,
+    items: ['Everything in Tier 2, PLUS:', 'Audio Components'],
+    border: 'border-navy-300',
+    extra: 'shadow-md',
+    badge: null,
+  },
+  {
+    name: 'Exclusive',
+    tier: 4,
+    items: [
+      'Everything in Tier 3, PLUS:',
+      'Comprehensive Coverage (covers every component except exclusions)',
+    ],
+    border: 'border-accent',
+    extra: 'ring-1 ring-accent/20 shadow-xl',
+    badge: 'Most Popular',
+  },
+] as const;
+
+/* ------------------------------------------------------------------ */
+/*  Page component                                                     */
+/* ------------------------------------------------------------------ */
+
+export default function AutoCoveragePage() {
+  return (
+    <>
+      {/* Hero */}
+      <section className="hero-mesh noise-bg relative overflow-hidden">
+        <div className="relative z-10 mx-auto max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8">
+          <div className="mx-auto max-w-3xl text-center">
+            <h1 className="font-display text-4xl leading-tight text-white sm:text-5xl lg:text-6xl">
+              Discover Comprehensive Vehicle Coverages
+            </h1>
+          </div>
+
+          {/* Two value-prop cards */}
+          <div className="mx-auto mt-14 grid max-w-4xl gap-6 sm:grid-cols-2">
+            <div className="glass-card rounded-2xl p-6">
+              <div className="mb-3 inline-flex rounded-xl bg-accent-muted p-3">
+                <Shield className="h-6 w-6 text-accent" />
+              </div>
+              <h3 className="text-lg font-bold text-white">Comprehensive Coverage</h3>
+              <p className="mt-2 text-sm leading-relaxed text-navy-100/80">
+                Our service contracts cover a wide range of repairs, ensuring your car stays in top
+                condition.
+              </p>
+            </div>
+
+            <div className="glass-card rounded-2xl p-6">
+              <div className="mb-3 inline-flex rounded-xl bg-accent-muted p-3">
+                <DollarSign className="h-6 w-6 text-accent" />
+              </div>
+              <h3 className="text-lg font-bold text-white">Affordable Plans</h3>
+              <p className="mt-2 text-sm leading-relaxed text-navy-100/80">
+                Choose from various plans that fit your budget without compromising on quality.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Intro */}
+      <section className="bg-white py-24">
+        <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
+          <h2 className="font-display text-3xl tracking-tight text-navy-900 sm:text-4xl">
+            Explore Comprehensive Vehicle Protection
+          </h2>
+          <div className="mx-auto mt-3 h-1 w-16 rounded-full bg-accent" />
+          <p className="mt-8 text-lg leading-relaxed text-navy-600">
+            At Click4Coverage, we offer customized coverage tiers designed specifically to fit your
+            family&apos;s lifestyles and budget. Enjoy complete peace of mind with our plans ranging
+            from basic safeguards to premium coverages, protecting your car from unexpected costs.
+            Key benefits include Engine, Transmission, and additional vehicle component coverage.
+          </p>
+        </div>
+      </section>
+
+      {/* Tier Comparison */}
+      <section className="bg-navy-50 py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-3xl text-center">
+            <h2 className="font-display text-3xl tracking-tight text-navy-900 sm:text-4xl">
+              Compare Our Coverage Tiers
+            </h2>
+            <p className="mt-4 text-lg leading-relaxed text-navy-600">
+              Explore and contrast the comprehensive benefits across our various coverage tiers to
+              confidently identify the coverage that aligns with your individual needs and budget.
+            </p>
+          </div>
+
+          <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {tiers.map((t) => (
+              <div
+                key={t.name}
+                className={`card-lift relative rounded-2xl border-2 ${t.border} ${t.extra} bg-white p-6`}
+              >
+                {/* Badge */}
+                {t.badge && (
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-accent px-4 py-1 text-xs font-bold text-navy-950 shadow-md">
+                    {t.badge}
+                  </span>
+                )}
+
+                {/* Tier label */}
+                <p className="text-xs font-semibold uppercase tracking-wider text-navy-400">
+                  Tier {t.tier}
+                </p>
+                <h3 className="mt-1 text-xl font-bold text-navy-900">{t.name}</h3>
+
+                {/* Divider */}
+                <div className="my-4 h-px bg-navy-100" />
+
+                {/* Items */}
+                <ul className="space-y-3">
+                  {t.items.map((item) => {
+                    const isHeading = item.startsWith('Everything');
+                    return (
+                      <li key={item} className="flex items-start gap-2">
+                        {isHeading ? (
+                          <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
+                        ) : (
+                          <Check className="mt-0.5 h-4 w-4 shrink-0 text-success" />
+                        )}
+                        <span
+                          className={`text-sm leading-relaxed ${
+                            isHeading ? 'font-semibold text-accent' : 'text-navy-700'
+                          }`}
+                        >
+                          {item}
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="hero-mesh noise-bg relative py-24 text-center">
+        <div className="relative z-10 mx-auto max-w-3xl px-4">
+          <h2 className="font-display text-3xl text-white sm:text-4xl lg:text-5xl">
+            Secure Your Peace of Mind Today
+          </h2>
+          <p className="mt-6 text-lg leading-relaxed text-navy-100/80">
+            Choose the coverage tier that best suits your needs and drive with confidence knowing
+            you&apos;re protected. Explore our comprehensive coverage options and take the first step
+            towards worry-free driving.
+          </p>
+          <Link
+            href="/quote"
+            className="group mt-10 inline-flex items-center gap-2 rounded-xl bg-accent px-10 py-4 text-lg font-bold text-navy-950 shadow-lg shadow-accent/20 transition hover:bg-accent-hover hover:scale-105"
+          >
+            Get Your Free Quote
+            <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+          </Link>
+        </div>
+      </section>
+    </>
+  );
+}
