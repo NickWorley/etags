@@ -31,9 +31,9 @@ export default function Header() {
             <Image
               src="/images/c4c-logo.png"
               alt="Click4Coverage"
-              width={160}
-              height={48}
-              className="h-9 w-auto"
+              width={200}
+              height={60}
+              className="h-12 w-auto"
             />
           </Link>
 
