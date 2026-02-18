@@ -26,6 +26,7 @@ export async function POST(request: NextRequest) {
     formParams.append("type", "auth");
     formParams.append("security_key", FORT_POINT_SECURITY_KEY || "");
     formParams.append("amount", String(amount));
+    formParams.append("customer_receipt", "true");
 
     if (token) {
       formParams.append("payment_token", token);

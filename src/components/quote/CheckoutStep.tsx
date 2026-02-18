@@ -67,7 +67,6 @@ export default function CheckoutStep() {
       } = latestFormRef.current;
 
       // Save customer to store
-      console.log("FirstName: ", firstName.trim());
       const customerData = {
         firstName: firstName.trim(),
         lastName: lastName.trim(),
@@ -168,7 +167,20 @@ export default function CheckoutStep() {
             return;
           }
           else {
-            
+
+            const captureRes = await fetch('/api/payment/capture', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                transactionId: paymentData.transactionid,
+                amount: masterPrice.toFixed(2),
+              }),
+            });
+
+            const captureData = await captureRes.json();
+            //console.log('Here is the response from the capture api:', captureData);
+
+
           }
 
         }
@@ -255,7 +267,6 @@ export default function CheckoutStep() {
           },
         },
         callback: (response: { token?: string; card?: { number?: string; exp?: string }; tokenType?: string }) => {
-          console.log('CollectJS response', response);
           handleCollectResponse(response);
         },
       });
