@@ -5,12 +5,71 @@ import { formatCurrency } from '@/lib/constants';
 import { Car, Home, ShoppingCart } from 'lucide-react';
 
 export default function CartReview() {
-  const { vehicles, homeCoverage, getMasterPrice, setStep } = useQuoteStore();
+  const { vehicles, homeCoverage, getMasterPrice, setStep, setVehiclePreview } = useQuoteStore();
 
   const masterTotal = getMasterPrice();
 
   // Filter vehicles that have a coverage selected
-  const coveredVehicles = vehicles.filter((v) => v.vehicle && v.coverage && v.costs);
+  const coveredVehicles = vehicles.filter((v) => v.vehicle && v.coverage);
+
+
+  async function handleReviewSub() {
+    if (coveredVehicles.length > 0) {
+      const contracts = coveredVehicles.map((v) => {
+        const today = new Date().toISOString().split('T')[0];
+        return {
+
+
+          coverages: [
+            {
+              term: {
+                termOdometer: v.coverage!.termOdometer,
+                termMonths: v.coverage!.termMonths,
+                deductible: v.coverage!.deductible,
+              },
+              generateForm: true,
+              ...v.coverage,
+            },
+          ],
+
+          // coverages: [v.coverage],
+          combineForms: false,
+          dealerNumber: process.env.NEXT_PUBLIC_DEALER_NUMBER_AUTO ?? '',
+          saleDate: today,
+          saleOdometer: v.saleOdometer,
+          startingOdometer: v.saleOdometer,
+          endingOdometer: v.saleOdometer + (v.coverage!.termOdometer ?? 0),
+          vehicle: v.vehicle,
+          //customer: customerData,
+        };
+      });
+
+      const contPreview = await fetch('/api/coverage/preview', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ contracts }),
+      });
+
+      const contPrevData = await contPreview.json();
+      if (!contPrevData.results[0].success) {
+        console.error("Error in contract preview:", contPrevData);
+        return;
+      }
+
+
+      contPrevData.results.forEach((preview: any, index: number) => {
+        const buckets = preview.data.contracts[0].contract.buckets;
+        setVehiclePreview(index, buckets);
+      });
+
+      setStep('checkout');
+
+
+
+    }
+  };
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
@@ -152,7 +211,8 @@ export default function CartReview() {
           Add More Coverage
         </button>
         <button
-          onClick={() => setStep('checkout')}
+          onClick={handleReviewSub}
+          //onClick={() => setStep('checkout')}
           className="flex-1 rounded-lg bg-accent px-6 py-3.5 text-base font-semibold text-navy-950 shadow-lg shadow-accent/20 transition hover:bg-accent-hover hover:scale-[1.02] active:scale-100"
         >
           Proceed to Checkout

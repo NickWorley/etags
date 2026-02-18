@@ -47,9 +47,9 @@ export default function ContactPage() {
       {/* Contact Info Cards */}
       <section className="bg-white py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto grid max-w-2xl gap-6 sm:grid-cols-2">
-            <div className="flex items-center gap-4 rounded-2xl border-l-4 border-accent bg-white p-6 shadow-lg transition hover:shadow-xl">
-              <div className="inline-flex rounded-full bg-accent-muted p-3">
+          <div className="mx-auto flex max-w-2xl flex-wrap justify-center gap-6">
+            <div className="flex shrink-0 items-center gap-4 rounded-2xl border-l-4 border-accent bg-white p-6 shadow-lg transition hover:shadow-xl">
+              <div className="inline-flex shrink-0 rounded-full bg-accent-muted p-3">
                 <Phone className="h-6 w-6 text-accent" />
               </div>
               <div>
@@ -63,15 +63,15 @@ export default function ContactPage() {
               </div>
             </div>
 
-            <div className="flex items-center gap-4 rounded-2xl border-l-4 border-accent bg-white p-6 shadow-lg transition hover:shadow-xl">
-              <div className="inline-flex rounded-full bg-accent-muted p-3">
+            <div className="flex shrink-0 items-center gap-4 rounded-2xl border-l-4 border-accent bg-white p-6 shadow-lg transition hover:shadow-xl">
+              <div className="inline-flex shrink-0 rounded-full bg-accent-muted p-3">
                 <Mail className="h-6 w-6 text-accent" />
               </div>
               <div>
                 <p className="text-sm font-medium text-navy-500">Email Us</p>
                 <a
                   href="mailto:support@click4coverage.com"
-                  className="text-lg font-bold text-navy-900 transition hover:text-accent"
+                  className="whitespace-nowrap text-lg font-bold text-navy-900 transition hover:text-accent"
                 >
                   support@click4coverage.com
                 </a>

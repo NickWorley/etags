@@ -37,6 +37,8 @@ export default function CheckoutStep() {
   const [state, setState] = useState(customer?.address?.state ?? '');
   const [zip, setZip] = useState(customer?.address?.postalCode ?? '');
 
+  const [initPayment, setInitPayment] = useState()
+
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -125,6 +127,7 @@ export default function CheckoutStep() {
                     termMonths: v.coverage!.termMonths,
                     deductible: v.coverage!.deductible,
                   },
+                  formNumber: "FormNumber001",
                   ...v.coverage,
                 },
               ],
