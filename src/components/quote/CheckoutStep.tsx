@@ -5,11 +5,13 @@ import Script from 'next/script';
 import { useQuoteStore } from '@/store/quote-store';
 import { US_STATES, formatCurrency } from '@/lib/constants';
 import { AlertCircle, Lock, CreditCard } from 'lucide-react';
+import Link from 'next/link';
 
 declare global {
   interface Window {
     CollectJS?: {
       configure: (config: Record<string, unknown>) => void;
+      startPaymentRequest: () => void;
     };
   }
 }
@@ -157,6 +159,7 @@ export default function CheckoutStep() {
   // Configure Collect.js after script loads
   useEffect(() => {
     if (collectReady && window.CollectJS && !configuredRef.current) {
+      console.log('Configuring CollectJS');
       configuredRef.current = true;
       window.CollectJS.configure({
         variant: 'inline',
@@ -175,7 +178,10 @@ export default function CheckoutStep() {
             placeholder: 'CVV',
           },
         },
-        callback: handleCollectResponse,
+        callback: (response: { token?: string; card?: { number?: string; exp?: string }; tokenType?: string }) => {
+          console.log('CollectJS response', response);
+          handleCollectResponse(response);
+        },
       });
     }
   }, [collectReady, handleCollectResponse]);
@@ -211,8 +217,17 @@ export default function CheckoutStep() {
   function handlePayClick() {
     setError('');
     if (!validateForm()) return;
+    console.log('HERE WE ARE');
     setLoading(true);
 
+    if (!window.CollectJS) {
+      setError('Payment form is still loading. Please try again.');
+      setLoading(false);
+      return;
+    }
+
+    window.CollectJS.startPaymentRequest();
+    
     // Collect.js will handle tokenization and call the callback
     // The pay button triggers Collect.js automatically via its ID
   }
@@ -445,7 +460,10 @@ export default function CheckoutStep() {
           />
           <span className="text-sm text-navy-700">
             I have read and agree to the{' '}
-            <span className="font-semibold text-accent">Vehicle Service Contract Terms</span>.
+            <Link href="/terms" className="font-semibold text-accent underline underline-offset-2">
+              Vehicle Service Contract Terms
+            </Link>
+            .
           </span>
         </label>
       </div>
