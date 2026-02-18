@@ -62,6 +62,7 @@ export default function CartReview() {
       contPrevData.results.forEach((preview: any, index: number) => {
         const buckets = preview.data.contracts[0].contract.buckets;
         setVehiclePreview(index, buckets);
+
       });
 
       setStep('checkout');

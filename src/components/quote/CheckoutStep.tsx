@@ -37,7 +37,7 @@ export default function CheckoutStep() {
   const [state, setState] = useState(customer?.address?.state ?? '');
   const [zip, setZip] = useState(customer?.address?.postalCode ?? '');
 
-  const [initPayment, setInitPayment] = useState()
+ 
 
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -46,6 +46,9 @@ export default function CheckoutStep() {
 
   const masterPrice = getMasterPrice();
   const configuredRef = useRef(false);
+
+   const [initPayment, setInitPayment] = useState(masterPrice);
+   const latestInitPaymentRef = useRef(initPayment);
 
   const tokenizationKey = process.env.NEXT_PUBLIC_FORT_POINT_TOKENIZATION_KEY ?? '';
 
@@ -57,6 +60,8 @@ export default function CheckoutStep() {
         return;
       }
 
+      const { paymentType } = useQuoteStore.getState();
+
       const {
         firstName,
         lastName,
@@ -67,6 +72,8 @@ export default function CheckoutStep() {
         state,
         zip,
       } = latestFormRef.current;
+
+      const currentInitPayment = latestInitPaymentRef.current;
 
       // Save customer to store
       const customerData = {
@@ -87,6 +94,11 @@ export default function CheckoutStep() {
 
       try {
         // Process payment
+        const vehicleTermTotal = vehicles.reduce((total, v) => {
+          if (!v.coverage) return total;
+          return total + v.coverage.termMonths;
+        }, 0);
+        const monthlyPrice = (masterPrice - currentInitPayment) / vehicleTermTotal;
         const paymentRes = await fetch('/api/payment/process', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -94,9 +106,11 @@ export default function CheckoutStep() {
             token: response.token,
             tokenType: response.tokenType,
             card: response.card,
-            amount: masterPrice.toFixed(2),
+            amount: currentInitPayment.toFixed(2),
             paymentType,
             customerInfo: customerData,
+            termTotal: vehicleTermTotal,
+            monthlyPrice: monthlyPrice.toFixed(2),
             //customer: customerData,
           }),
         });
@@ -127,7 +141,7 @@ export default function CheckoutStep() {
                     termMonths: v.coverage!.termMonths,
                     deductible: v.coverage!.deductible,
                   },
-                  formNumber: "FormNumber001",
+                  
                   ...v.coverage,
                 },
               ],
@@ -176,7 +190,7 @@ export default function CheckoutStep() {
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 transactionId: paymentData.transactionid,
-                amount: masterPrice.toFixed(2),
+                amount: currentInitPayment.toFixed(2),
               }),
             });
 
@@ -218,7 +232,7 @@ export default function CheckoutStep() {
       }
     },
     [
-      masterPrice, paymentType, vehicles, homeCoverage, setCustomer, setStep,
+      masterPrice, vehicles, homeCoverage, setCustomer, setStep,
     ]
   );
 
@@ -247,6 +261,8 @@ export default function CheckoutStep() {
       zip,
     };
 
+    latestInitPaymentRef.current = initPayment;
+
 
     if (collectReady && window.CollectJS && !configuredRef.current) {
       
@@ -274,7 +290,7 @@ export default function CheckoutStep() {
         },
       });
     }
-  }, [firstName, lastName, phone, email, address1, city, state, zip, collectReady, handleCollectResponse]);
+  }, [firstName, lastName, phone, email, address1, city, state, zip, initPayment, collectReady, handleCollectResponse]);
 
   function validateForm(): boolean {
     if (!firstName.trim() || !lastName.trim()) {
@@ -322,6 +338,42 @@ export default function CheckoutStep() {
     // The pay button triggers Collect.js automatically via its ID
   }
 
+  function formatPaymentType(paymentType: string) {
+
+    if (paymentType === 'full') {
+      setPaymentType('full');
+      setInitPayment(masterPrice);
+    }
+    else if (paymentType === 'buydown') {
+      console.log('Here is the vehicle object I will parse:', vehicles);
+      const targetCodes = [
+        'TOTALRATE',
+        'RESERVE',
+        'SURCHARGE',
+        'ROADF',
+        'ROADR',
+      ];
+
+      const reserveBucketSum = () => {
+        return vehicles.reduce((total, v) => {
+          if (!v.previewBuckets) return total;
+
+          const vehicleTotal = v.previewBuckets
+            .filter((bucket) => targetCodes.includes(bucket.code)) // or bucket
+            .reduce((sum, bucket) => sum + bucket.amount, 0);
+
+          return total + vehicleTotal;
+        }, 0);
+      };
+
+      const totalReserve = reserveBucketSum();
+      console.log('Total reserve across all vehicles:', totalReserve);
+      setPaymentType('buydown');
+      setInitPayment(totalReserve);
+    }
+
+  }
+
   return (
     <div className="mx-auto max-w-2xl space-y-6">
       {/* Collect.js Script */}
@@ -341,7 +393,8 @@ export default function CheckoutStep() {
         </h3>
         <div className="flex gap-3">
           <button
-            onClick={() => setPaymentType('full')}
+            onClick={() => formatPaymentType('full')}
+            //onClick={() => setPaymentType('full')}
             className={`flex-1 rounded-lg border-2 px-4 py-3 text-sm font-semibold transition ${
               paymentType === 'full'
                 ? 'border-accent bg-accent/5 text-accent'
@@ -351,7 +404,8 @@ export default function CheckoutStep() {
             Pay in Full
           </button>
           <button
-            onClick={() => setPaymentType('buydown')}
+            onClick={() => formatPaymentType('buydown')}
+            //onClick={() => setPaymentType('buydown')}
             className={`flex-1 rounded-lg border-2 px-4 py-3 text-sm font-semibold transition ${
               paymentType === 'buydown'
                 ? 'border-accent bg-accent/5 text-accent'
@@ -363,7 +417,7 @@ export default function CheckoutStep() {
         </div>
         <div className="mt-3 text-right">
           <span className="text-lg font-bold text-navy-900">
-            Total: {formatCurrency(masterPrice)}
+            Total: {formatCurrency(initPayment)}
           </span>
         </div>
       </div>
@@ -582,7 +636,7 @@ export default function CheckoutStep() {
             Processing...
           </span>
         ) : (
-          `Pay ${formatCurrency(masterPrice)}`
+          `Pay ${formatCurrency(initPayment)}`
         )}
       </button>
 

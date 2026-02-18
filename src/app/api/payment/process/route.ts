@@ -6,7 +6,7 @@ const FORT_POINT_GATEWAY_URL = "https://secure.fppgateway.com/api/transact.php";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { token, tokenType, card, amount, customerInfo } = body;
+    const { token, tokenType, card, amount, customerInfo, paymentType, termTotal, monthlyPrice } = body;
 
     if (!amount) {
       return NextResponse.json(
@@ -51,6 +51,17 @@ export async function POST(request: NextRequest) {
       formParams.append("country", customerInfo.address.countryCode);
       formParams.append("phone", customerInfo.phone);
       formParams.append("email", customerInfo.email);
+    }
+
+    if (paymentType === "buydown") {
+      formParams.append("billing_method", "recurring");
+      formParams.append("recurring", "add_subscription");
+      formParams.append("plan_id", "");
+      formParams.append("plan_payments", termTotal);
+      formParams.append("plan_amount", monthlyPrice);
+      formParams.append("month_frequency", "1");
+      formParams.append("day_of_month", "1");
+
     }
 
     const response = await fetch(FORT_POINT_GATEWAY_URL, {
