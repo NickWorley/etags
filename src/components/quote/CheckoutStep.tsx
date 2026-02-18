@@ -55,20 +55,33 @@ export default function CheckoutStep() {
         return;
       }
 
+      const {
+        firstName,
+        lastName,
+        phone,
+        email,
+        address1,
+        city,
+        state,
+        zip,
+      } = latestFormRef.current;
+
       // Save customer to store
+      console.log("FirstName: ", firstName.trim());
       const customerData = {
         firstName: firstName.trim(),
         lastName: lastName.trim(),
         phone: phone.trim(),
         email: email.trim(),
         address: {
-          countryCode: 'US',
+          countryCode: 'USA',
           address1: address1.trim(),
           city: city.trim(),
           state,
           postalCode: zip.trim(),
         },
       };
+      
       setCustomer(customerData);
 
       try {
@@ -82,7 +95,8 @@ export default function CheckoutStep() {
             card: response.card,
             amount: masterPrice.toFixed(2),
             paymentType,
-            customer: customerData,
+            customerInfo: customerData,
+            //customer: customerData,
           }),
         });
 
@@ -103,7 +117,20 @@ export default function CheckoutStep() {
           const contracts = coveredVehicles.map((v) => {
             const today = new Date().toISOString().split('T')[0];
             return {
-              coverages: [v.coverage],
+
+
+              coverages: [
+                {                
+                  term: {
+                    termOdometer: v.coverage!.termOdometer,
+                    termMonths: v.coverage!.termMonths,
+                    deductible: v.coverage!.deductible,
+                  },
+                  ...v.coverage,
+                },
+              ],
+
+              // coverages: [v.coverage],
               dealerNumber: process.env.NEXT_PUBLIC_DEALER_NUMBER_AUTO ?? '',
               saleDate: today,
               saleOdometer: v.saleOdometer,
@@ -113,12 +140,37 @@ export default function CheckoutStep() {
               customer: customerData,
             };
           });
-
-          await fetch('/api/contract/create', {
+          
+          const autoContractRes = await fetch('/api/contract/create', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ contracts }),
           });
+
+          const autoConData = await autoContractRes.json();
+          if (!autoConData.results[0].success) {
+            setError(
+              autoConData.results[0].error.error.details[0].message || 
+              'Auto contract failed to create. Please make sure you have filled out all vehicle descriptors or do not have a current plan active.'
+            );
+
+            const cancelConRes = await fetch('/api/payment/cancel', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                transactionId: paymentData.transactionid,
+              }),
+            });
+
+            //const cancelData = await cancelConRes.json();
+            
+            setLoading(false);
+            return;
+          }
+          else {
+            
+          }
+
         }
 
         // Create home contract
@@ -151,17 +203,41 @@ export default function CheckoutStep() {
       }
     },
     [
-      firstName, lastName, phone, email, address1, city, state, zip,
       masterPrice, paymentType, vehicles, homeCoverage, setCustomer, setStep,
     ]
   );
 
+  const latestFormRef = useRef({
+    firstName,
+    lastName,
+    phone,
+    email,
+    address1,
+    city,
+    state,
+    zip,
+  });
+
   // Configure Collect.js after script loads
   useEffect(() => {
+
+    latestFormRef.current = {
+      firstName,
+      lastName,
+      phone,
+      email,
+      address1,
+      city,
+      state,
+      zip,
+    };
+
+
     if (collectReady && window.CollectJS && !configuredRef.current) {
-      console.log('Configuring CollectJS');
+      
       configuredRef.current = true;
       window.CollectJS.configure({
+        paymentSelector: '#payButton',
         variant: 'inline',
         styleSniffer: true,
         fields: {
@@ -184,7 +260,7 @@ export default function CheckoutStep() {
         },
       });
     }
-  }, [collectReady, handleCollectResponse]);
+  }, [firstName, lastName, phone, email, address1, city, state, zip, collectReady, handleCollectResponse]);
 
   function validateForm(): boolean {
     if (!firstName.trim() || !lastName.trim()) {
@@ -217,7 +293,7 @@ export default function CheckoutStep() {
   function handlePayClick() {
     setError('');
     if (!validateForm()) return;
-    console.log('HERE WE ARE');
+    
     setLoading(true);
 
     if (!window.CollectJS) {

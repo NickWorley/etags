@@ -6,7 +6,7 @@ const FORT_POINT_GATEWAY_URL = "https://secure.fppgateway.com/api/transact.php";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { token, tokenType, card, amount } = body;
+    const { token, tokenType, card, amount, customerInfo } = body;
 
     if (!amount) {
       return NextResponse.json(
@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
     }
 
     const formParams = new URLSearchParams();
-    formParams.append("type", "sale");
+    formParams.append("type", "auth");
     formParams.append("security_key", FORT_POINT_SECURITY_KEY || "");
     formParams.append("amount", String(amount));
 
@@ -38,6 +38,18 @@ export async function POST(request: NextRequest) {
       if (card.exp) {
         formParams.append("ccexp", card.exp);
       }
+    }
+
+    if (customerInfo) {
+      formParams.append("first_name", customerInfo.firstName);
+      formParams.append("last_name", customerInfo.lastName);
+      formParams.append("address1", customerInfo.address.address1);
+      formParams.append("city", customerInfo.address.city);
+      formParams.append("state", customerInfo.address.state);
+      formParams.append("zip", customerInfo.address.postalCode);
+      formParams.append("country", customerInfo.address.countryCode);
+      formParams.append("phone", customerInfo.phone);
+      formParams.append("email", customerInfo.email);
     }
 
     const response = await fetch(FORT_POINT_GATEWAY_URL, {
