@@ -93,12 +93,16 @@ export default function CheckoutStep() {
       setCustomer(customerData);
 
       try {
-        // Process payment
+        // Process payment (home-only has no vehicle terms; use 1 and 0 for monthly)
         const vehicleTermTotal = vehicles.reduce((total, v) => {
           if (!v.coverage) return total;
           return total + v.coverage.termMonths;
         }, 0);
-        const monthlyPrice = (masterPrice - currentInitPayment) / vehicleTermTotal;
+        const termTotal = vehicleTermTotal || 1;
+        const monthlyPrice =
+          vehicleTermTotal > 0
+            ? (masterPrice - currentInitPayment) / vehicleTermTotal
+            : 0;
         const paymentRes = await fetch('/api/payment/process', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -109,7 +113,7 @@ export default function CheckoutStep() {
             amount: currentInitPayment.toFixed(2),
             paymentType,
             customerInfo: customerData,
-            termTotal: vehicleTermTotal,
+            termTotal,
             monthlyPrice: monthlyPrice.toFixed(2),
             //customer: customerData,
           }),
@@ -344,6 +348,7 @@ export default function CheckoutStep() {
       setPaymentType('full');
       setInitPayment(masterPrice);
     }
+
     else if (paymentType === 'buydown') {
       console.log('Here is the vehicle object I will parse:', vehicles);
       const targetCodes = [
@@ -354,22 +359,30 @@ export default function CheckoutStep() {
         'ROADR',
       ];
 
-      const reserveBucketSum = () => {
-        return vehicles.reduce((total, v) => {
-          if (!v.previewBuckets) return total;
+      // const reserveBucketSum = () => {
+      //   return vehicles.reduce((total, v) => {
+      //     if (!v.previewBuckets) return total;
 
-          const vehicleTotal = v.previewBuckets
-            .filter((bucket) => targetCodes.includes(bucket.code)) // or bucket
-            .reduce((sum, bucket) => sum + bucket.amount, 0);
+      //     const vehicleTotal = v.previewBuckets
+      //       .filter((bucket) => targetCodes.includes(bucket.code)) // or bucket
+      //       .reduce((sum, bucket) => sum + bucket.amount, 0);
 
-          return total + vehicleTotal;
-        }, 0);
-      };
+      //     return total + vehicleTotal;
+      //   }, 0);
+      // };
 
-      const totalReserve = reserveBucketSum();
-      console.log('Total reserve across all vehicles:', totalReserve);
+      const reserveVehicleSums = vehicles.reduce((total, v) => {
+        if (!v.previewBuckets) return total;
+        const vehicleTotal = v.previewBuckets.filter((bucket) => targetCodes.includes(bucket.code)).reduce((sum, bucket) => sum + bucket.amount, 0);
+        return total + vehicleTotal;
+      }, 0);
+
+      const totalReserveSum = reserveVehicleSums + (Number(homeCoverage?.priceBreakdown.reserve) || 0);
+      console.log('Total reserve across all vehicles:', reserveVehicleSums);
+      console.log('Total for home coverage:', homeCoverage?.priceBreakdown.reserve);
+      console.log('Final Reserve Bucket Sum:', totalReserveSum);
       setPaymentType('buydown');
-      setInitPayment(totalReserve);
+      setInitPayment(totalReserveSum);
     }
 
   }

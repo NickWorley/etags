@@ -42,16 +42,26 @@ export async function POST(request: NextRequest) {
       customer: {
         firstName,
         lastName,
-        phone,
-        email,
         address: {
           address1: address.address1,
           city: address.city,
           state: address.state,
-          postalCode: address.postalCode,
-          countryCode: address.countryCode,
+          zipCode: address.postalCode,
+          country: address.countryCode,
+        },
+        contact: {
+          phone: {
+            mainPhone: phone,
+          },
+          email,
         },
       },
+      transactionDate: new Date().toISOString().split('T')[0],
+      products: [
+        {
+          productPurchaseDate: new Date().toISOString().split('T')[0]
+        },
+      ],
     };
 
     const accessToken = await getHomeAccessToken();

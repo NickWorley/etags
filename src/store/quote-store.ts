@@ -32,6 +32,7 @@ interface QuoteState {
   setVehicleCoverage: (index: number, coverage: SelectedCoverage, costs: CostBreakdown) => void;
   setVehiclePreview: (index: number, buckets: PreviewBucket[]) => void;
   addVehicleSlot: () => void;
+  setCurrentVehicleIndex: (index: number) => void;
 
   // Available rates (from API)
   availableRates: CoverageRate[];
@@ -94,6 +95,7 @@ export const useQuoteStore = create<QuoteState>((set, get) => ({
         currentVehicleIndex: state.vehicles.length,
       };
     }),
+  setCurrentVehicleIndex: (index) => set({ currentVehicleIndex: index }),
 
   availableRates: [],
   setAvailableRates: (rates) => set({ availableRates: rates }),

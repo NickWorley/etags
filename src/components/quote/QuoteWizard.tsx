@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
 import { useQuoteStore } from '@/store/quote-store';
 import type { WizardStep } from '@/lib/types';
 import VehicleInfoStep from './VehicleInfoStep';
@@ -13,6 +14,8 @@ import SuccessPage from './SuccessPage';
 interface QuoteWizardProps {
   initialVin?: string;
   initialMileage?: number;
+  /** When 'home', start at home coverage selection (standalone home flow). */
+  initialProduct?: 'home';
 }
 
 const STEPS: { key: WizardStep; label: string }[] = [
@@ -42,9 +45,19 @@ function getProgressIndex(step: WizardStep): number {
   }
 }
 
-export default function QuoteWizard({ initialVin, initialMileage }: QuoteWizardProps) {
+export default function QuoteWizard({ initialVin, initialMileage, initialProduct }: QuoteWizardProps) {
   const currentStep = useQuoteStore((s) => s.currentStep);
+  const setStep = useQuoteStore((s) => s.setStep);
   const progressIndex = getProgressIndex(currentStep);
+
+  // Standalone home flow: start at home-selection only on initial load (so "Add Another Vehicle" can later go to vehicle-info)
+  const hasRedirectedToHome = useRef(false);
+  useEffect(() => {
+    if (initialProduct === 'home' && !hasRedirectedToHome.current) {
+      hasRedirectedToHome.current = true;
+      setStep('home-selection');
+    }
+  }, [initialProduct, setStep]);
 
   return (
     <div className="space-y-8">
@@ -103,7 +116,9 @@ export default function QuoteWizard({ initialVin, initialMileage }: QuoteWizardP
       )}
       {currentStep === 'plan-selection' && <PlanSelectionStep />}
       {currentStep === 'bundle-prompt' && <BundlePrompt />}
-      {currentStep === 'home-selection' && <HomeSelectionStep />}
+      {currentStep === 'home-selection' && (
+        <HomeSelectionStep isHomeOnly={initialProduct === 'home'} />
+      )}
       {currentStep === 'cart-review' && <CartReview />}
       {currentStep === 'checkout' && <CheckoutStep />}
       {currentStep === 'success' && <SuccessPage />}

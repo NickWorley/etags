@@ -66,11 +66,13 @@ export default function CartReview() {
       });
 
       setStep('checkout');
-
-
-
+    } else if (homeCoverage) {
+      // Standalone home coverage: no auto preview needed
+      setStep('checkout');
     }
   };
+
+  const canProceed = coveredVehicles.length > 0 || !!homeCoverage;
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
@@ -213,8 +215,8 @@ export default function CartReview() {
         </button>
         <button
           onClick={handleReviewSub}
-          //onClick={() => setStep('checkout')}
-          className="flex-1 rounded-lg bg-accent px-6 py-3.5 text-base font-semibold text-navy-950 shadow-lg shadow-accent/20 transition hover:bg-accent-hover hover:scale-[1.02] active:scale-100"
+          disabled={!canProceed}
+          className="flex-1 rounded-lg bg-accent px-6 py-3.5 text-base font-semibold text-navy-950 shadow-lg shadow-accent/20 transition hover:bg-accent-hover hover:scale-[1.02] active:scale-100 disabled:opacity-50 disabled:pointer-events-none"
         >
           Proceed to Checkout
         </button>

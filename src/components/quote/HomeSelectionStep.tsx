@@ -11,6 +11,7 @@ import {
 } from '@/lib/constants';
 import type { HomeCoverageType, HomeSize, CoverageDuration, HomeAddOn } from '@/lib/types';
 import homeCoveragesJson from '@/lib/home-coverages.json';
+import Link from 'next/link';
 import { ArrowLeft, Home, Check } from 'lucide-react';
 
 // Build a typed lookup from the JSON
@@ -46,7 +47,12 @@ function buildCoverageCode(typeCode: string, duration: CoverageDuration, sizeCod
   return `BEE${typeCode}B${duration}Y${sizeCode}100D`;
 }
 
-export default function HomeSelectionStep() {
+interface HomeSelectionStepProps {
+  /** True when user entered quote flow for home coverage only (standalone). */
+  isHomeOnly?: boolean;
+}
+
+export default function HomeSelectionStep({ isHomeOnly = false }: HomeSelectionStepProps) {
   const { setHomeCoverage, setStep } = useQuoteStore();
 
   const [selectedType, setSelectedType] = useState<HomeCoverageType>('total');
@@ -136,13 +142,23 @@ export default function HomeSelectionStep() {
     <div className="mx-auto max-w-3xl space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <button
-          onClick={() => setStep('bundle-prompt')}
-          className="flex items-center gap-1.5 text-sm font-medium text-navy-600 hover:text-accent transition"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back
-        </button>
+        {isHomeOnly ? (
+          <Link
+            href="/home-coverage"
+            className="flex items-center gap-1.5 text-sm font-medium text-navy-600 hover:text-accent transition"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back
+          </Link>
+        ) : (
+          <button
+            onClick={() => setStep('bundle-prompt')}
+            className="flex items-center gap-1.5 text-sm font-medium text-navy-600 hover:text-accent transition"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back
+          </button>
+        )}
         <div className="flex items-center gap-2">
           <Home className="h-5 w-5 text-accent" />
           <h2 className="text-xl font-bold font-display text-navy-900">Home Protection Plans</h2>
