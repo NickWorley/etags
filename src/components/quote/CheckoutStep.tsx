@@ -47,7 +47,31 @@ export default function CheckoutStep() {
   const masterPrice = getMasterPrice();
   const configuredRef = useRef(false);
 
-  const [initPayment, setInitPayment] = useState(masterPrice);
+  // Bundle discount: 10% for 2+ vehicles (car bundle), 10% for home (home bundle); max 20%
+  const coveredVehicles = vehicles.filter((v) => v.vehicle && v.coverage);
+  const BUNDLE_DISCOUNT_PERCENT = 10;
+  const carBundleDiscount = coveredVehicles.length >= 2 ? BUNDLE_DISCOUNT_PERCENT : 0;
+  const homeBundleDiscount = homeCoverage ? BUNDLE_DISCOUNT_PERCENT : 0;
+  const totalDiscountPercent = carBundleDiscount + homeBundleDiscount;
+  const discountAmount = masterPrice * (totalDiscountPercent / 100);
+  const discountedTotal = masterPrice - discountAmount;
+  const hasBundleDiscount = totalDiscountPercent > 0;
+
+  // Buydown: reserve-based initial payment and term (matches payment API)
+  const BUYDOWN_TERM_MONTHS = 6;
+  const targetCodes = ['TOTALRATE', 'RESERVE', 'SURCHARGE', 'ROADF', 'ROADR'];
+  const reserveVehicleSums = vehicles.reduce((total, v) => {
+    if (!v.previewBuckets) return total;
+    return total + v.previewBuckets.filter((b) => targetCodes.includes(b.code)).reduce((sum, b) => sum + b.amount, 0);
+  }, 0);
+  const buydownInitialAmount = reserveVehicleSums + (Number(homeCoverage?.priceBreakdown.reserve) || 0);
+  const totalDue = hasBundleDiscount ? discountedTotal : masterPrice;
+  const buydownRemaining = Math.max(0, totalDue - buydownInitialAmount);
+  const buydownMonthly = BUYDOWN_TERM_MONTHS > 0 ? buydownRemaining / BUYDOWN_TERM_MONTHS : 0;
+
+  const [initPayment, setInitPayment] = useState(
+    hasBundleDiscount ? discountedTotal : masterPrice
+  );
   const latestInitPaymentRef = useRef(initPayment);
 
   const tokenizationKey = process.env.NEXT_PUBLIC_FORT_POINT_TOKENIZATION_KEY ?? '';
@@ -98,12 +122,14 @@ export default function CheckoutStep() {
           if (!v.coverage) return total;
           return total + v.coverage.termMonths;
         }, 0);
-        const homeTerm = homeCoverage?.duration;
-        const termTotal = (vehicleTermTotal + Number(homeTerm)) || 1;
-        const monthlyPrice =
-          termTotal > 0
-            ? (masterPrice - currentInitPayment) / termTotal
-            : 0;
+        //const homeTerm = homeCoverage?.duration;
+        //const termTotal = (vehicleTermTotal + Number(homeTerm)) || 1;
+        // const monthlyPrice =
+        //   termTotal > 0
+        //     ? (masterPrice - currentInitPayment) / termTotal
+        //     : 0;
+        const termTotal = 6;
+        const monthlyPrice = hasBundleDiscount ? (discountedTotal - currentInitPayment) / termTotal : (masterPrice - currentInitPayment) / termTotal;
         const paymentRes = await fetch('/api/payment/process', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -375,7 +401,7 @@ export default function CheckoutStep() {
 
     if (paymentType === 'full') {
       setPaymentType('full');
-      setInitPayment(masterPrice);
+      setInitPayment(hasBundleDiscount ? discountedTotal : masterPrice);
     }
 
     else if (paymentType === 'buydown') {
@@ -441,11 +467,51 @@ export default function CheckoutStep() {
             Buy-Down Plan
           </button>
         </div>
-        <div className="mt-3 text-right">
+        <div className="mt-3 space-y-1 text-right">
+          {hasBundleDiscount && (
+            <>
+              <div className="text-navy-600">
+                <span className="line-through">{formatCurrency(masterPrice)}</span>
+                <span className="ml-2 font-bold text-navy-900">
+                  {formatCurrency(discountedTotal)}
+                </span>
+              </div>
+              <p className="text-sm font-medium text-accent">
+                {totalDiscountPercent}% bundle discount applied (−{formatCurrency(discountAmount)})
+              </p>
+            </>
+          )}
           <span className="text-lg font-bold text-navy-900">
             Total: {formatCurrency(initPayment)}
           </span>
         </div>
+        {paymentType === 'buydown' && (
+          <div className="mt-4 rounded-xl border-2 border-accent/30 bg-accent/5 p-4">
+            <h4 className="text-sm font-semibold text-navy-700 mb-3">Buy-Down Plan Summary</h4>
+            <ul className="space-y-2 text-sm">
+              <li className="flex justify-between">
+                <span className="text-navy-600">Order total</span>
+                <span className="font-medium text-navy-900">{formatCurrency(totalDue)}</span>
+              </li>
+              <li className="flex justify-between">
+                <span className="text-navy-600">Initial payment (due today)</span>
+                <span className="font-medium text-navy-900">{formatCurrency(buydownInitialAmount)}</span>
+              </li>
+              <li className="flex justify-between">
+                <span className="text-navy-600">Remaining balance</span>
+                <span className="font-medium text-navy-900">{formatCurrency(buydownRemaining)}</span>
+              </li>
+              <li className="flex justify-between">
+                <span className="text-navy-600">Term duration</span>
+                <span className="font-medium text-navy-900">{BUYDOWN_TERM_MONTHS} months</span>
+              </li>
+              <li className="flex justify-between border-t border-navy-200 pt-2 mt-2">
+                <span className="font-semibold text-navy-700">Monthly payment</span>
+                <span className="font-bold text-accent">{formatCurrency(buydownMonthly)}</span>
+              </li>
+            </ul>
+          </div>
+        )}
       </div>
 
       {/* Customer Information */}

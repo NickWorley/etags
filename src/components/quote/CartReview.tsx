@@ -12,6 +12,17 @@ export default function CartReview() {
   // Filter vehicles that have a coverage selected
   const coveredVehicles = vehicles.filter((v) => v.vehicle && v.coverage);
 
+  // Bundle discount: 10% for 2+ vehicles (car bundle), 10% for home (home bundle); max 20%
+  const BUNDLE_DISCOUNT_PERCENT = 10;
+  const carBundleDiscount = coveredVehicles.length >= 2 ? BUNDLE_DISCOUNT_PERCENT : 0;
+  const homeBundleDiscount = homeCoverage ? BUNDLE_DISCOUNT_PERCENT : 0;
+  const totalDiscountPercent = carBundleDiscount + homeBundleDiscount;
+  const discountAmount = masterTotal * (totalDiscountPercent / 100);
+  const discountedTotal = masterTotal - discountAmount;
+  const hasBundleDiscount = totalDiscountPercent > 0;
+
+
+
 
   async function handleReviewSub() {
     if (coveredVehicles.length > 0) {
@@ -197,11 +208,25 @@ export default function CartReview() {
 
       {/* Master Total */}
       <div className="rounded-2xl bg-navy-950 p-6 shadow-lg">
-        <div className="flex items-center justify-between">
-          <span className="text-lg font-semibold text-white">Total Due</span>
-          <span className="text-3xl font-extrabold text-white">
-            {formatCurrency(masterTotal)}
-          </span>
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center justify-between">
+            <span className="text-lg font-semibold text-white">Total Due</span>
+            <div className="flex flex-col items-end gap-0.5">
+              {hasBundleDiscount && (
+                <span className="text-lg font-extrabold text-white/70 line-through">
+                  {formatCurrency(masterTotal)}
+                </span>
+              )}
+              <span className="text-3xl font-extrabold text-white">
+                {formatCurrency(hasBundleDiscount ? discountedTotal : masterTotal)}
+              </span>
+            </div>
+          </div>
+          {hasBundleDiscount && (
+            <p className="text-sm text-accent font-medium">
+              {totalDiscountPercent}% bundle discount applied (−{formatCurrency(discountAmount)})
+            </p>
+          )}
         </div>
       </div>
 
