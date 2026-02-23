@@ -47,8 +47,8 @@ export default function CheckoutStep() {
   const masterPrice = getMasterPrice();
   const configuredRef = useRef(false);
 
-   const [initPayment, setInitPayment] = useState(masterPrice);
-   const latestInitPaymentRef = useRef(initPayment);
+  const [initPayment, setInitPayment] = useState(masterPrice);
+  const latestInitPaymentRef = useRef(initPayment);
 
   const tokenizationKey = process.env.NEXT_PUBLIC_FORT_POINT_TOKENIZATION_KEY ?? '';
 
@@ -98,10 +98,11 @@ export default function CheckoutStep() {
           if (!v.coverage) return total;
           return total + v.coverage.termMonths;
         }, 0);
-        const termTotal = vehicleTermTotal || 1;
+        const homeTerm = homeCoverage?.duration;
+        const termTotal = (vehicleTermTotal + Number(homeTerm)) || 1;
         const monthlyPrice =
-          vehicleTermTotal > 0
-            ? (masterPrice - currentInitPayment) / vehicleTermTotal
+          termTotal > 0
+            ? (masterPrice - currentInitPayment) / termTotal
             : 0;
         const paymentRes = await fetch('/api/payment/process', {
           method: 'POST',
@@ -130,6 +131,9 @@ export default function CheckoutStep() {
           return;
         }
 
+        let autoSuccess = true;
+        let homeSuccess = true;
+        
         // Create auto contracts
         const coveredVehicles = vehicles.filter((v) => v.vehicle && v.coverage);
         if (coveredVehicles.length > 0) {
@@ -167,49 +171,27 @@ export default function CheckoutStep() {
             body: JSON.stringify({ contracts }),
           });
 
+          
           const autoConData = await autoContractRes.json();
-          if (!autoConData.results[0].success) {
+          const results = Array.isArray(autoConData.results)
+            ? autoConData.results
+            : [];
+
+          const failed = results.find((r: any) => !r.success);
+
+          if (failed) {
+            autoSuccess = false;
             setError(
-              autoConData.results[0].error.error.details[0].message || 
-              'Auto contract failed to create. Please make sure you have filled out all vehicle descriptors or do not have a current plan active.'
+              failed?.error?.error?.details?.[0]?.message ||
+                'Auto contract failed to create. Please make sure you have filled out all vehicle descriptors or do not have a current plan active.'
             );
-
-            const cancelConRes = await fetch('/api/payment/cancel', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                transactionId: paymentData.transactionid,
-              }),
-            });
-
-            //const cancelData = await cancelConRes.json();
-            
-            setLoading(false);
-            return;
           }
-          else {
-
-            const captureRes = await fetch('/api/payment/capture', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                transactionId: paymentData.transactionid,
-                amount: currentInitPayment.toFixed(2),
-              }),
-            });
-
-            const captureData = await captureRes.json();
-            //console.log('Here is the response from the capture api:', captureData);
-
-
-          }
-
         }
 
         // Create home contract
         if (homeCoverage) {
           const addOnCodes = homeCoverage.addOns.map((a) => a.code);
-          await fetch('/api/contract/home', {
+          const homeRes = await fetch('/api/contract/home', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -226,6 +208,53 @@ export default function CheckoutStep() {
               },
             }),
           });
+          const homeData = await homeRes.json();
+          if (homeData.error) {
+              homeSuccess = false;
+              setError(
+                homeData.error || 
+                'Auto contract failed to create. Please make sure you have filled out all vehicle descriptors or do not have a current plan active.'
+            );
+          }
+          console.log('Here is the home response:', homeData);
+        }
+
+        if (!autoSuccess || !homeSuccess) {
+          try {
+            const cancelConRes = await fetch('/api/payment/cancel', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                transactionId: paymentData.transactionid,
+              }),
+            });
+
+            await cancelConRes.json();
+
+          } catch (e) {
+            console.error('Error cancelling payment after contract failure', e);
+          }
+          setLoading(false);
+          return;
+        }
+
+        const captureRes = await fetch('/api/payment/capture', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            transactionId: paymentData.transactionid,
+            amount: currentInitPayment.toFixed(2),
+          }),
+        });
+
+        const captureData = await captureRes.json();
+        if (!captureRes.ok || captureData.response_code !== '100') {
+          setError(
+            captureData.responsetext ||
+              'Payment capture failed. Please contact support.'
+          );
+          setLoading(false);
+          return;
         }
 
         setStep('success');
@@ -350,7 +379,6 @@ export default function CheckoutStep() {
     }
 
     else if (paymentType === 'buydown') {
-      console.log('Here is the vehicle object I will parse:', vehicles);
       const targetCodes = [
         'TOTALRATE',
         'RESERVE',
@@ -359,18 +387,6 @@ export default function CheckoutStep() {
         'ROADR',
       ];
 
-      // const reserveBucketSum = () => {
-      //   return vehicles.reduce((total, v) => {
-      //     if (!v.previewBuckets) return total;
-
-      //     const vehicleTotal = v.previewBuckets
-      //       .filter((bucket) => targetCodes.includes(bucket.code)) // or bucket
-      //       .reduce((sum, bucket) => sum + bucket.amount, 0);
-
-      //     return total + vehicleTotal;
-      //   }, 0);
-      // };
-
       const reserveVehicleSums = vehicles.reduce((total, v) => {
         if (!v.previewBuckets) return total;
         const vehicleTotal = v.previewBuckets.filter((bucket) => targetCodes.includes(bucket.code)).reduce((sum, bucket) => sum + bucket.amount, 0);
@@ -378,9 +394,6 @@ export default function CheckoutStep() {
       }, 0);
 
       const totalReserveSum = reserveVehicleSums + (Number(homeCoverage?.priceBreakdown.reserve) || 0);
-      console.log('Total reserve across all vehicles:', reserveVehicleSums);
-      console.log('Total for home coverage:', homeCoverage?.priceBreakdown.reserve);
-      console.log('Final Reserve Bucket Sum:', totalReserveSum);
       setPaymentType('buydown');
       setInitPayment(totalReserveSum);
     }
