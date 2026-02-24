@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
     if (paymentType === "buydown") {
       formParams.append("billing_method", "recurring");
       formParams.append("recurring", "add_subscription");
-      formParams.append("plan_id", "");
+      //formParams.append("plan_id", "");
       formParams.append("plan_payments", termTotal);
       formParams.append("plan_amount", monthlyPrice);
       formParams.append("month_frequency", "1");
@@ -100,6 +100,7 @@ export async function POST(request: NextRequest) {
       response: parsedResponse.response,
       response_code: parsedResponse.response_code,
       transactionid: parsedResponse.transactionid,
+      subscriptionid: parsedResponse?.subscription_id,
       statusMessage,
     });
   } catch (error) {

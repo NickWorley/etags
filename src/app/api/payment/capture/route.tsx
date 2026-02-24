@@ -6,7 +6,7 @@ const FORT_POINT_GATEWAY_URL = "https://secure.fppgateway.com/api/transact.php";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { transactionId, amount } = body;
+    const { transactionId, amount, paymentType, subscriptionid, autoDetails, homeDetails } = body;
 
     if (!amount || !transactionId) {
       return NextResponse.json(
@@ -20,6 +20,35 @@ export async function POST(request: NextRequest) {
     captureParams.append("security_key", FORT_POINT_SECURITY_KEY || "");
     captureParams.append("transactionid", transactionId);
     captureParams.append("amount", amount);
+    captureParams.append("merchant_defined_field_1", "This transaction was processed through the Click-4-Coverage website");
+    
+    if (autoDetails && Array.isArray(autoDetails) && autoDetails.length > 0) {
+      // collect all contract numbers from autoDetails
+      const contractNumbers = autoDetails
+        .map((item: any) => item?.data?.contracts?.[0]?.contract?.contractNumber)
+        .filter((n: string | undefined) => !!n);
+
+      if (contractNumbers.length > 0) {
+        const contractString = contractNumbers.join("\n");
+        captureParams.append(
+          "merchant_defined_field_2",
+          "PCRS Contract Number(s)\n" + contractString
+        );
+      }
+    }
+    if (homeDetails) {
+      // TODO:
+    }
+
+    if (paymentType === "full") {
+      captureParams.append("merchant_defined_field_3", "This user payed the transaction in full");
+    }
+    else if (paymentType === "buydown") {
+      captureParams.append("merchant_defined_field_3", "This user payed using the buydown feature");
+      captureParams.append("plan_id", subscriptionid);
+
+    }
+    
 
     const capRes = await fetch(FORT_POINT_GATEWAY_URL, {
       method: "POST",

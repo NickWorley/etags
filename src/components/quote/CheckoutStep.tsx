@@ -118,16 +118,7 @@ export default function CheckoutStep() {
 
       try {
         // Process payment (home-only has no vehicle terms; use 1 and 0 for monthly)
-        const vehicleTermTotal = vehicles.reduce((total, v) => {
-          if (!v.coverage) return total;
-          return total + v.coverage.termMonths;
-        }, 0);
-        //const homeTerm = homeCoverage?.duration;
-        //const termTotal = (vehicleTermTotal + Number(homeTerm)) || 1;
-        // const monthlyPrice =
-        //   termTotal > 0
-        //     ? (masterPrice - currentInitPayment) / termTotal
-        //     : 0;
+
         const termTotal = 6;
         const monthlyPrice = hasBundleDiscount ? (discountedTotal - currentInitPayment) / termTotal : (masterPrice - currentInitPayment) / termTotal;
         const paymentRes = await fetch('/api/payment/process', {
@@ -147,7 +138,6 @@ export default function CheckoutStep() {
         });
 
         const paymentData = await paymentRes.json();
-
         if (!paymentRes.ok || paymentData.response_code !== '100') {
           setError(
             paymentData.responsetext ||
@@ -157,9 +147,14 @@ export default function CheckoutStep() {
           return;
         }
 
+        
+
         let autoSuccess = true;
         let homeSuccess = true;
         
+        let autoContractResults: any[] = [];
+        let homeContractResult: any = null;
+
         // Create auto contracts
         const coveredVehicles = vehicles.filter((v) => v.vehicle && v.coverage);
         if (coveredVehicles.length > 0) {
@@ -203,6 +198,7 @@ export default function CheckoutStep() {
             ? autoConData.results
             : [];
 
+          autoContractResults = results;
           const failed = results.find((r: any) => !r.success);
 
           if (failed) {
@@ -234,15 +230,18 @@ export default function CheckoutStep() {
               },
             }),
           });
+
           const homeData = await homeRes.json();
+          homeContractResult = homeData;
+
           if (homeData.error) {
               homeSuccess = false;
               setError(
                 homeData.error || 
-                'Auto contract failed to create. Please make sure you have filled out all vehicle descriptors or do not have a current plan active.'
+                'Home contract failed to create. Please verify your information and try again.'
             );
           }
-          console.log('Here is the home response:', homeData);
+          
         }
 
         if (!autoSuccess || !homeSuccess) {
@@ -264,12 +263,20 @@ export default function CheckoutStep() {
           return;
         }
 
+        console.log("Here is the vehicle response:", autoContractResults);
+        console.log("Here is the home contract response:", homeContractResult);
+        console.log("Here is the payment response:", paymentData);
+
         const captureRes = await fetch('/api/payment/capture', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             transactionId: paymentData.transactionid,
             amount: currentInitPayment.toFixed(2),
+            paymentType,
+            subscriptionid: paymentData?.subscriptionid,
+            autoDetails: autoContractResults,
+            homeDetails: homeContractResult
           }),
         });
 
