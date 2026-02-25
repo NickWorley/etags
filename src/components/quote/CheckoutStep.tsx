@@ -269,9 +269,9 @@ export default function CheckoutStep() {
           return;
         }
 
-        console.log("Here is the vehicle response:", autoContractResults);
-        console.log("Here is the home contract response:", homeContractResult);
-        console.log("Here is the payment response:", paymentData);
+        // console.log("Here is the vehicle response:", autoContractResults);
+        // console.log("Here is the home contract response:", homeContractResult);
+        // console.log("Here is the payment response:", paymentData);
 
         const captureRes = await fetch('/api/payment/capture', {
           method: 'POST',
@@ -295,6 +295,30 @@ export default function CheckoutStep() {
           setLoading(false);
           return;
         }
+
+
+        const noteRes = await fetch('/api/contract/add-note', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            paymentType,
+            transactionid: paymentData.transactionid,
+            autoDetails: autoContractResults,
+          }),
+        });
+
+        const noteData = await noteRes.json();
+
+        const noteResults = Array.isArray(noteData) ? noteData : [];
+        const failed = noteResults.find((r: any) => !r.success);
+
+        if (failed) {
+          setError(
+            noteData || 
+            'Error adding note to PCRS'
+          );
+        }
+        
 
         setAmountPaidAtCheckout(currentInitPayment);
         setStep('success');
