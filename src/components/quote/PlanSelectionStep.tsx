@@ -76,6 +76,8 @@ export default function PlanSelectionStep() {
   const [selectedTermByTier, setSelectedTermByTier] = useState<Record<string, number>>({});
   const [selectedAddOns, setSelectedAddOns] = useState<Record<string, Set<number>>>({});
   const [expandedInfo, setExpandedInfo] = useState<string | null>(null);
+  // Which tier is highlighted (user-clicked); null = use recommended tier
+  const [highlightedTier, setHighlightedTier] = useState<string | null>(null);
 
   // Sort rates by TIER_ORDER
   const sortedRates = useMemo(() => {
@@ -235,7 +237,7 @@ export default function PlanSelectionStep() {
       </div>
 
       {/* Plan Cards Grid */}
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 items-stretch">
         {sortedRates.map((rate) => {
           const tierName = getTierName(rate.description);
           const tierLevel = getTierLevel(rate.description);
@@ -243,18 +245,20 @@ export default function PlanSelectionStep() {
           const term = rate.terms[termIdx];
           const addOnIds = getAddOnSet(tierName);
           const costs = calculateTotal(term, addOnIds);
-          const isRecommended = tierName === recommendedTier;
+          const isHighlighted = tierName === (highlightedTier ?? recommendedTier);
 
           return (
-            <div key={rate.code} className="flex flex-col gap-4">
+            <div key={rate.code} className="flex flex-col gap-4 h-full">
               <PlanCard
                 name={tierName}
                 price={costs.totalPrice}
                 frequency="one-time"
                 features={getFeatures(tierName)}
-                isRecommended={isRecommended}
+                isRecommended={isHighlighted}
+                showBestValueBadge={tierName === recommendedTier}
                 tierLevel={tierLevel}
                 onSelect={() => handleSelect(rate)}
+                onTierClick={() => setHighlightedTier(tierName)}
               />
 
               {/* Term Selector */}

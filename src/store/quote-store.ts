@@ -51,6 +51,10 @@ interface QuoteState {
   setPaymentType: (type: 'full' | 'buydown') => void;
   getMasterPrice: () => number;
 
+  /** Amount actually charged at checkout (after discounts); set on payment success for success page */
+  amountPaidAtCheckout: number | null;
+  setAmountPaidAtCheckout: (amount: number) => void;
+
   // Reset
   reset: () => void;
 }
@@ -119,6 +123,9 @@ export const useQuoteStore = create<QuoteState>((set, get) => ({
     return total;
   },
 
+  amountPaidAtCheckout: null,
+  setAmountPaidAtCheckout: (amount) => set({ amountPaidAtCheckout: amount }),
+
   reset: () =>
     set({
       currentStep: 'vehicle-info',
@@ -128,5 +135,6 @@ export const useQuoteStore = create<QuoteState>((set, get) => ({
       homeCoverage: null,
       customer: null,
       paymentType: 'full',
+      amountPaidAtCheckout: null,
     }),
 }));

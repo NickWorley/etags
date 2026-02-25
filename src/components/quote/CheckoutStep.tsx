@@ -6,6 +6,8 @@ import { useQuoteStore } from '@/store/quote-store';
 import { US_STATES, formatCurrency } from '@/lib/constants';
 import { AlertCircle, Lock, CreditCard } from 'lucide-react';
 import Link from 'next/link';
+import VehicleCoverageSummary from './VehicleCoverageSummary';
+import HomeCoverageSummary from './HomeCoverageSummary';
 
 declare global {
   interface Window {
@@ -26,6 +28,7 @@ export default function CheckoutStep() {
     setPaymentType,
     getMasterPrice,
     setStep,
+    setAmountPaidAtCheckout,
   } = useQuoteStore();
 
   const [firstName, setFirstName] = useState(customer?.firstName ?? '');
@@ -50,9 +53,11 @@ export default function CheckoutStep() {
   // Bundle discount: 10% for 2+ vehicles (car bundle), 10% for home (home bundle); max 20%
   const coveredVehicles = vehicles.filter((v) => v.vehicle && v.coverage);
   const BUNDLE_DISCOUNT_PERCENT = 10;
-  const carBundleDiscount = coveredVehicles.length >= 2 ? BUNDLE_DISCOUNT_PERCENT : 0;
-  const homeBundleDiscount = (homeCoverage && coveredVehicles.length >= 1) ? BUNDLE_DISCOUNT_PERCENT : 0;
-  const totalDiscountPercent = carBundleDiscount + homeBundleDiscount;
+  const bundleDiscount = ((homeCoverage && coveredVehicles.length >=1) || (coveredVehicles.length >= 2)) ? BUNDLE_DISCOUNT_PERCENT : 0;
+  //const carBundleDiscount = coveredVehicles.length >= 2 ? BUNDLE_DISCOUNT_PERCENT : 0;
+  //const homeBundleDiscount = (homeCoverage && coveredVehicles.length >= 1) ? BUNDLE_DISCOUNT_PERCENT : 0;
+  //const totalDiscountPercent = carBundleDiscount + homeBundleDiscount;
+  const totalDiscountPercent = bundleDiscount;
   const discountAmount = masterPrice * (totalDiscountPercent / 100);
   const discountedTotal = masterPrice - discountAmount;
   const hasBundleDiscount = totalDiscountPercent > 0;
@@ -291,6 +296,7 @@ export default function CheckoutStep() {
           return;
         }
 
+        setAmountPaidAtCheckout(currentInitPayment);
         setStep('success');
       } catch {
         setError('An error occurred while processing your order. Please try again.');
@@ -445,6 +451,22 @@ export default function CheckoutStep() {
       />
 
       <h2 className="text-2xl font-bold font-display text-navy-900">Checkout</h2>
+
+      {/* Coverage Summary - what you're buying */}
+      <div className="space-y-4">
+        <h3 className="text-sm font-semibold text-navy-500 uppercase tracking-wide">
+          Coverage Summary
+        </h3>
+        {coveredVehicles.filter((v) => v.costs).map((v, idx) => (
+          <VehicleCoverageSummary
+            key={idx}
+            vehicle={v.vehicle!}
+            coverage={v.coverage!}
+            costs={v.costs!}
+          />
+        ))}
+        {homeCoverage && <HomeCoverageSummary homeCoverage={homeCoverage} />}
+      </div>
 
       {/* Payment Type Toggle */}
       <div className="rounded-2xl bg-white p-6 shadow-md">
