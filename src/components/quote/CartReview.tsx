@@ -15,7 +15,7 @@ export default function CartReview() {
   // Bundle discount: 10% for 2+ vehicles (car bundle), 10% for home (home bundle); max 20%
   const BUNDLE_DISCOUNT_PERCENT = 10;
   const carBundleDiscount = coveredVehicles.length >= 2 ? BUNDLE_DISCOUNT_PERCENT : 0;
-  const homeBundleDiscount = homeCoverage ? BUNDLE_DISCOUNT_PERCENT : 0;
+  const homeBundleDiscount = (homeCoverage && coveredVehicles.length >=1) ? BUNDLE_DISCOUNT_PERCENT : 0;
   const totalDiscountPercent = carBundleDiscount + homeBundleDiscount;
   const discountAmount = masterTotal * (totalDiscountPercent / 100);
   const discountedTotal = masterTotal - discountAmount;

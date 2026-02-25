@@ -10,7 +10,7 @@ function QuotePageContent() {
   const mileageParam = searchParams.get('mileage');
   const mileage = mileageParam ? parseInt(mileageParam, 10) : undefined;
   const product = searchParams.get('product') ?? undefined;
-  const isHomeOnly = product === 'home';
+  const productType = product ? 'home' : 'auto'
 
   return (
     <section className="min-h-screen bg-navy-50 py-8">
@@ -18,7 +18,7 @@ function QuotePageContent() {
         <QuoteWizard
           initialVin={vin}
           initialMileage={Number.isNaN(mileage) ? undefined : mileage}
-          initialProduct={isHomeOnly ? 'home' : undefined}
+          initialProduct={productType}
         />
       </div>
     </section>

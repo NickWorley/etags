@@ -32,21 +32,20 @@ export async function POST(request: NextRequest) {
         const contractString = contractNumbers.join("\n");
         captureParams.append(
           "merchant_defined_field_2",
-          "PCRS Contract Number(s)\n" + contractString
+          "PCRS Contract Number(s):\n" + contractString
         );
       }
     }
     if (homeDetails) {
-      // TODO:
+      captureParams.append("merchant_defined_field_3", "PCRSW Contract Number:\n" + homeDetails.contractNumber[0]);
     }
 
     if (paymentType === "full") {
-      captureParams.append("merchant_defined_field_3", "This user payed the transaction in full");
+      captureParams.append("merchant_defined_field_4", "This user payed the transaction in full");
     }
     else if (paymentType === "buydown") {
-      captureParams.append("merchant_defined_field_3", "This user payed using the buydown feature");
-      captureParams.append("plan_id", subscriptionid);
-
+      captureParams.append("merchant_defined_field_4", "This user payed using the buydown feature");
+      captureParams.append("merchant_defined_field_5", "FortPoint Subscription ID:\n" + subscriptionid);
     }
     
 

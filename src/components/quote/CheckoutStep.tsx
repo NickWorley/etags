@@ -51,7 +51,7 @@ export default function CheckoutStep() {
   const coveredVehicles = vehicles.filter((v) => v.vehicle && v.coverage);
   const BUNDLE_DISCOUNT_PERCENT = 10;
   const carBundleDiscount = coveredVehicles.length >= 2 ? BUNDLE_DISCOUNT_PERCENT : 0;
-  const homeBundleDiscount = homeCoverage ? BUNDLE_DISCOUNT_PERCENT : 0;
+  const homeBundleDiscount = (homeCoverage && coveredVehicles.length >= 1) ? BUNDLE_DISCOUNT_PERCENT : 0;
   const totalDiscountPercent = carBundleDiscount + homeBundleDiscount;
   const discountAmount = masterPrice * (totalDiscountPercent / 100);
   const discountedTotal = masterPrice - discountAmount;
@@ -241,6 +241,7 @@ export default function CheckoutStep() {
                 'Home contract failed to create. Please verify your information and try again.'
             );
           }
+          
           
         }
 

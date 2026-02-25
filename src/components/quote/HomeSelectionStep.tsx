@@ -142,7 +142,16 @@ export default function HomeSelectionStep({ isHomeOnly = false }: HomeSelectionS
     <div className="mx-auto max-w-3xl space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        {isHomeOnly ? (
+        {!isHomeOnly && (
+          <button
+            onClick={() => setStep('bundle-prompt')}
+            className="flex items-center gap-1.5 text-sm font-medium text-navy-600 hover:text-accent transition"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back
+          </button>
+        )}
+        {/* {isHomeOnly ? (
           <Link
             href="/home-coverage"
             className="flex items-center gap-1.5 text-sm font-medium text-navy-600 hover:text-accent transition"
@@ -158,7 +167,7 @@ export default function HomeSelectionStep({ isHomeOnly = false }: HomeSelectionS
             <ArrowLeft className="h-4 w-4" />
             Back
           </button>
-        )}
+        )} */}
         <div className="flex items-center gap-2">
           <Home className="h-5 w-5 text-accent" />
           <h2 className="text-xl font-bold font-display text-navy-900">Home Protection Plans</h2>

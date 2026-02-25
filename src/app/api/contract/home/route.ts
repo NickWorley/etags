@@ -30,6 +30,14 @@ export async function POST(request: NextRequest) {
       ? lossCodes.join(";")
       : lossCodes || "";
 
+
+    const easternDate = new Date().toLocaleDateString('en-US', {
+      timeZone: 'America/New_York',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    });
+
     const payload = {
       dealerNumber: DEALER_NUMBER_HOME,
       dealerInvoiceNumber: "C4C25",
@@ -56,10 +64,10 @@ export async function POST(request: NextRequest) {
           email,
         },
       },
-      transactionDate: new Date().toISOString().split('T')[0],
+      transactionDate: easternDate,
       products: [
         {
-          productPurchaseDate: new Date().toISOString().split('T')[0]
+          productPurchaseDate: easternDate
         },
       ],
     };
