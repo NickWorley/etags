@@ -33,7 +33,7 @@ export default function Header() {
               alt="Click4Coverage"
               width={200}
               height={60}
-              className="h-12 w-auto"
+              className="h-22 w-auto"
             />
           </Link>
 
