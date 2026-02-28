@@ -9,8 +9,8 @@ export default function Footer() {
         <div className="mb-12">
           <Link href="/" className="inline-block">
             <Image
-              src="/images/c4c-logo.png"
-              alt="Click4Coverage"
+              src="/images/etags-logo.png"
+              alt="eTags"
               width={160}
               height={48}
               className="h-9 w-auto"

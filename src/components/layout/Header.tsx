@@ -28,8 +28,8 @@ export default function Header() {
           {/* Logo */}
           <Link href="/" className="flex-shrink-0">
             <Image
-              src="/images/c4c-logo.png"
-              alt="Click4Coverage"
+              src="/images/etags-logo.png"
+              alt="eTags"
               width={200}
               height={60}
               className="h-22 w-auto"
