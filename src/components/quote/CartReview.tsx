@@ -145,7 +145,7 @@ export default function CartReview() {
         <button
           onClick={handleReviewSub}
           disabled={!canProceed || loading}
-          className="flex-1 rounded-lg bg-accent px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-accent/20 transition hover:bg-accent-hover hover:scale-[1.02] active:scale-100 disabled:opacity-50 disabled:pointer-events-none"
+          className="flex-1 rounded-lg bg-action px-6 py-3.5 text-base font-semibold text-navy-950 shadow-lg shadow-action/20 transition hover:bg-action-hover hover:scale-[1.02] active:scale-100 disabled:opacity-50 disabled:pointer-events-none"
         >
           {loading ? (
             <span className="flex items-center justify-center gap-2">

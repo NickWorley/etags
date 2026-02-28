@@ -114,7 +114,7 @@ export default function AboutPage() {
           </p>
           <Link
             href="/quote"
-            className="group mt-10 inline-flex items-center gap-2 rounded-xl bg-accent px-10 py-4 text-lg font-bold text-white shadow-lg shadow-accent/20 transition hover:bg-accent-hover hover:scale-105"
+            className="group mt-10 inline-flex items-center gap-2 rounded-xl bg-action px-10 py-4 text-lg font-bold text-navy-950 shadow-lg shadow-action/20 transition hover:bg-action-hover hover:scale-105"
           >
             Explore Options
             <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />

@@ -204,7 +204,7 @@ export default function PlanSelectionStep() {
           <p className="text-navy-600">No coverage plans available for this vehicle.</p>
           <button
             onClick={() => setStep('vehicle-info')}
-            className="mt-4 rounded-lg bg-accent px-6 py-2.5 text-sm font-semibold text-white hover:bg-accent-hover"
+            className="mt-4 rounded-lg bg-action px-6 py-2.5 text-sm font-semibold text-navy-950 hover:bg-action-hover"
           >
             Go Back
           </button>

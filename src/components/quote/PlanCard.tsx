@@ -119,7 +119,7 @@ export default function PlanCard({
           }}
           className={`w-full rounded-lg px-4 py-3 text-sm font-semibold transition hover:scale-[1.02] active:scale-100 ${
             isRecommended
-              ? 'bg-accent text-white shadow-lg shadow-accent/20 hover:bg-accent-hover'
+              ? 'bg-action text-navy-950 shadow-lg shadow-action/20 hover:bg-action-hover'
               : 'bg-navy-800 text-white hover:bg-navy-700'
           }`}
         >

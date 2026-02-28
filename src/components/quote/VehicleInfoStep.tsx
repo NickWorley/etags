@@ -273,7 +273,7 @@ export default function VehicleInfoStep({ initialVin, initialMileage }: VehicleI
             {/* Submit */}
             <button
               type="submit"
-              className="w-full rounded-lg bg-accent px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-accent/20 transition hover:bg-accent-hover hover:scale-[1.02] active:scale-100"
+              className="w-full rounded-lg bg-action px-6 py-3.5 text-base font-semibold text-navy-950 shadow-lg shadow-action/20 transition hover:bg-action-hover hover:scale-[1.02] active:scale-100"
             >
               Check My Coverage Options
             </button>
