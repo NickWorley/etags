@@ -44,6 +44,11 @@ export const US_STATES = [
   { code: 'WY', name: 'Wyoming' },
 ];
 
+// Business rule constants shared across CartReview and CheckoutStep
+export const BUNDLE_DISCOUNT_PERCENT = 10;
+export const BUYDOWN_TERM_MONTHS = 6;
+export const RESERVE_BUCKET_CODES = ['TOTALRATE', 'RESERVE', 'SURCHARGE', 'ROADF', 'ROADR'] as const;
+
 export function formatCurrency(amount: number): string {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
 }

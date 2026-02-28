@@ -6,11 +6,11 @@ const FORT_POINT_GATEWAY_URL = "https://secure.fppgateway.com/api/transact.php";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { transactionId, amount, paymentType, subscriptionid, autoDetails, homeDetails } = body;
+    const { transactionId, amount, paymentType, subscriptionid, autoDetails } = body;
 
     if (!amount || !transactionId) {
       return NextResponse.json(
-        { error: 'Missing amount -> ' + amount + ' or transactionid -> ' + transactionId },
+        { error: 'Missing required payment parameters' },
         { status: 400 }
       );
     }
@@ -25,7 +25,12 @@ export async function POST(request: NextRequest) {
     if (autoDetails && Array.isArray(autoDetails) && autoDetails.length > 0) {
       // collect all contract numbers from autoDetails
       const contractNumbers = autoDetails
-        .map((item: any) => item?.data?.contracts?.[0]?.contract?.contractNumber)
+        .map((item: Record<string, unknown>) => {
+          const data = item?.data as Record<string, unknown> | undefined;
+          const contracts = (data?.contracts as Record<string, unknown>[] | undefined);
+          const contract = contracts?.[0]?.contract as Record<string, unknown> | undefined;
+          return contract?.contractNumber as string | undefined;
+        })
         .filter((n: string | undefined) => !!n);
 
       if (contractNumbers.length > 0) {
@@ -36,10 +41,6 @@ export async function POST(request: NextRequest) {
         );
       }
     }
-    if (homeDetails) {
-      captureParams.append("merchant_defined_field_3", "PCRSW Contract Number:\n" + homeDetails.contractNumber[0]);
-    }
-
     if (paymentType === "full") {
       captureParams.append("merchant_defined_field_4", "This user paid the transaction in full");
     }

@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAutoAccessToken } from "@/lib/pcrs-auth";
-import { success } from "zod";
 
 const PCRS_AUTO_API_URL = process.env.PCRS_AUTO_API_URL;
 
@@ -18,7 +17,12 @@ export async function POST(request: NextRequest) {
     }
 
     const contractNumbers = autoDetails
-      .map((item: any) => item?.data?.contracts?.[0]?.contract?.contractNumber)
+      .map((item: Record<string, unknown>) => {
+        const data = item?.data as Record<string, unknown> | undefined;
+        const contracts = (data?.contracts as Record<string, unknown>[] | undefined);
+        const contract = contracts?.[0]?.contract as Record<string, unknown> | undefined;
+        return contract?.contractNumber as string | undefined;
+      })
       .filter((n: string | undefined) => !!n);
 
     if (!(contractNumbers.length > 0)) {

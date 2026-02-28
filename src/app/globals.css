@@ -1,23 +1,23 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: #f8f8f9;
-  --color-foreground: #01132c;
-  --color-navy-950: #01132c;
-  --color-navy-900: #0a1f3d;
-  --color-navy-800: #133b5d;
-  --color-navy-700: #1c567e;
-  --color-navy-600: #25729e;
-  --color-navy-500: #3094e8;
-  --color-navy-100: #d6eafa;
-  --color-navy-50: #eef5fc;
-  --color-accent: #3094e8;
-  --color-accent-hover: #2676ba;
-  --color-accent-light: #7bb5e6;
-  --color-accent-muted: rgba(48, 148, 232, 0.12);
-  --color-action: #00ae47;
-  --color-action-hover: #009a3e;
-  --color-action-light: #44b743;
+  --color-background: #f7faf7;
+  --color-foreground: #1a2e1a;
+  --color-navy-950: #0d1f0d;
+  --color-navy-900: #1a2e1a;
+  --color-navy-800: #2a4a2a;
+  --color-navy-700: #3a6a3a;
+  --color-navy-600: #4a8a4a;
+  --color-navy-500: #5aaa5a;
+  --color-navy-100: #d4e8d4;
+  --color-navy-50: #eaf5ea;
+  --color-accent: #3BAA35;
+  --color-accent-hover: #2E8A2A;
+  --color-accent-light: #6BBF68;
+  --color-accent-muted: rgba(59, 170, 53, 0.12);
+  --color-action: #3BAA35;
+  --color-action-hover: #2E8A2A;
+  --color-action-light: #6BBF68;
   --color-success: #10b981;
   --color-success-light: #34d399;
   --color-glass: rgba(255, 255, 255, 0.06);
@@ -68,10 +68,10 @@ html {
 /* ─── Gradient mesh for hero sections ─── */
 .hero-mesh {
   background:
-    radial-gradient(ellipse 80% 50% at 20% 40%, rgba(48, 148, 232, 0.12) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 60% at 80% 20%, rgba(0, 174, 71, 0.08) 0%, transparent 50%),
-    radial-gradient(ellipse 40% 80% at 60% 90%, rgba(48, 148, 232, 0.06) 0%, transparent 50%),
-    linear-gradient(165deg, #01132c 0%, #0a1f3d 30%, #133b5d 70%, #1c567e 100%);
+    radial-gradient(ellipse 80% 50% at 20% 40%, rgba(59, 170, 53, 0.15) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 60% at 80% 20%, rgba(46, 138, 42, 0.10) 0%, transparent 50%),
+    radial-gradient(ellipse 40% 80% at 60% 90%, rgba(59, 170, 53, 0.08) 0%, transparent 50%),
+    linear-gradient(165deg, #0d1f0d 0%, #1a2e1a 30%, #2a4a2a 70%, #3a6a3a 100%);
 }
 
 /* ─── Stagger animation ─── */
@@ -105,7 +105,7 @@ html {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(48, 148, 232, 0.15), transparent);
+  background: linear-gradient(90deg, transparent, rgba(59, 170, 53, 0.15), transparent);
   animation: shimmer 3s ease-in-out infinite;
 }
 
@@ -115,7 +115,7 @@ html {
 }
 .card-lift:hover {
   transform: translateY(-4px);
-  box-shadow: 0 20px 40px rgba(10, 15, 30, 0.12), 0 8px 16px rgba(10, 15, 30, 0.06);
+  box-shadow: 0 20px 40px rgba(10, 30, 10, 0.12), 0 8px 16px rgba(10, 30, 10, 0.06);
 }
 
 /* ─── Accent underline ─── */
@@ -139,12 +139,12 @@ html {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #01132c;
+  background: #0d1f0d;
 }
 ::-webkit-scrollbar-thumb {
-  background: #25729e;
+  background: #3a6a3a;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3094e8;
+  background: #3BAA35;
 }

@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Script from 'next/script';
 import { useQuoteStore } from '@/store/quote-store';
-import { US_STATES, formatCurrency } from '@/lib/constants';
+import { US_STATES, formatCurrency, BUNDLE_DISCOUNT_PERCENT, BUYDOWN_TERM_MONTHS, RESERVE_BUCKET_CODES } from '@/lib/constants';
 import { AlertCircle, Lock, CreditCard } from 'lucide-react';
 import Link from 'next/link';
 import VehicleCoverageSummary from './VehicleCoverageSummary';
@@ -38,8 +38,6 @@ export default function CheckoutStep() {
   const [state, setState] = useState(customer?.address?.state ?? '');
   const [zip, setZip] = useState(customer?.address?.postalCode ?? '');
 
- 
-
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -48,21 +46,15 @@ export default function CheckoutStep() {
   const masterPrice = getMasterPrice();
   const configuredRef = useRef(false);
 
-  // Bundle discount: 10% for 2+ vehicles
   const coveredVehicles = vehicles.filter((v) => v.vehicle && v.coverage);
-  const BUNDLE_DISCOUNT_PERCENT = 10;
   const bundleDiscount = coveredVehicles.length >= 2 ? BUNDLE_DISCOUNT_PERCENT : 0;
-  const totalDiscountPercent = bundleDiscount;
-  const discountAmount = masterPrice * (totalDiscountPercent / 100);
+  const discountAmount = masterPrice * (bundleDiscount / 100);
   const discountedTotal = masterPrice - discountAmount;
-  const hasBundleDiscount = totalDiscountPercent > 0;
+  const hasBundleDiscount = bundleDiscount > 0;
 
-  // Buydown: reserve-based initial payment and term (matches payment API)
-  const BUYDOWN_TERM_MONTHS = 6;
-  const targetCodes = ['TOTALRATE', 'RESERVE', 'SURCHARGE', 'ROADF', 'ROADR'];
   const reserveVehicleSums = vehicles.reduce((total, v) => {
     if (!v.previewBuckets) return total;
-    return total + v.previewBuckets.filter((b) => targetCodes.includes(b.code)).reduce((sum, b) => sum + b.amount, 0);
+    return total + v.previewBuckets.filter((b) => RESERVE_BUCKET_CODES.includes(b.code as typeof RESERVE_BUCKET_CODES[number])).reduce((sum, b) => sum + b.amount, 0);
   }, 0);
   const buydownInitialAmount = reserveVehicleSums;
   const totalDue = hasBundleDiscount ? discountedTotal : masterPrice;
@@ -117,8 +109,6 @@ export default function CheckoutStep() {
       setCustomer(customerData);
 
       try {
-        // Process payment (home-only has no vehicle terms; use 1 and 0 for monthly)
-
         const termTotal = 6;
         const monthlyPrice = hasBundleDiscount ? (discountedTotal - currentInitPayment) / termTotal : (masterPrice - currentInitPayment) / termTotal;
         const paymentRes = await fetch('/api/payment/process', {
@@ -133,7 +123,6 @@ export default function CheckoutStep() {
             customerInfo: customerData,
             termTotal,
             monthlyPrice: monthlyPrice.toFixed(2),
-            //customer: customerData,
           }),
         });
 
@@ -147,11 +136,8 @@ export default function CheckoutStep() {
           return;
         }
 
-        
-
         let autoSuccess = true;
-
-        let autoContractResults: any[] = [];
+        let autoContractResults: Record<string, unknown>[] = [];
 
         // Create auto contracts
         const coveredVehicles = vehicles.filter((v) => v.vehicle && v.coverage);
@@ -159,8 +145,6 @@ export default function CheckoutStep() {
           const contracts = coveredVehicles.map((v) => {
             const today = new Date().toISOString().split('T')[0];
             return {
-
-
               coverages: [
                 {                
                   term: {
@@ -182,21 +166,19 @@ export default function CheckoutStep() {
               customer: customerData,
             };
           });
-          
           const autoContractRes = await fetch('/api/contract/create', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ contracts }),
           });
 
-          
           const autoConData = await autoContractRes.json();
           const results = Array.isArray(autoConData.results)
             ? autoConData.results
             : [];
 
           autoContractResults = results;
-          const failed = results.find((r: any) => !r.success);
+          const failed = results.find((r: Record<string, unknown>) => !r.success);
 
           if (failed) {
             autoSuccess = false;
@@ -262,7 +244,7 @@ export default function CheckoutStep() {
         const noteData = await noteRes.json();
 
         const noteResults = Array.isArray(noteData) ? noteData : [];
-        const failed = noteResults.find((r: any) => !r.success);
+        const failed = noteResults.find((r: Record<string, unknown>) => !r.success);
 
         if (failed) {
           setError(
@@ -395,23 +377,15 @@ export default function CheckoutStep() {
     }
 
     else if (paymentType === 'buydown') {
-      const targetCodes = [
-        'TOTALRATE',
-        'RESERVE',
-        'SURCHARGE',
-        'ROADF',
-        'ROADR',
-      ];
-
-      const reserveVehicleSums = vehicles.reduce((total, v) => {
+      const reserveSum = vehicles.reduce((total, v) => {
         if (!v.previewBuckets) return total;
-        const vehicleTotal = v.previewBuckets.filter((bucket) => targetCodes.includes(bucket.code)).reduce((sum, bucket) => sum + bucket.amount, 0);
-        return total + vehicleTotal;
+        return total + v.previewBuckets
+          .filter((bucket) => RESERVE_BUCKET_CODES.includes(bucket.code as typeof RESERVE_BUCKET_CODES[number]))
+          .reduce((sum, bucket) => sum + bucket.amount, 0);
       }, 0);
 
-      const totalReserveSum = reserveVehicleSums;
       setPaymentType('buydown');
-      setInitPayment(totalReserveSum);
+      setInitPayment(reserveSum);
     }
 
   }
@@ -451,7 +425,6 @@ export default function CheckoutStep() {
         <div className="flex gap-3">
           <button
             onClick={() => formatPaymentType('full')}
-            //onClick={() => setPaymentType('full')}
             className={`flex-1 rounded-lg border-2 px-4 py-3 text-sm font-semibold transition ${
               paymentType === 'full'
                 ? 'border-accent bg-accent/5 text-accent'
@@ -462,7 +435,6 @@ export default function CheckoutStep() {
           </button>
           <button
             onClick={() => formatPaymentType('buydown')}
-            //onClick={() => setPaymentType('buydown')}
             className={`flex-1 rounded-lg border-2 px-4 py-3 text-sm font-semibold transition ${
               paymentType === 'buydown'
                 ? 'border-accent bg-accent/5 text-accent'
@@ -482,7 +454,7 @@ export default function CheckoutStep() {
                 </span>
               </div>
               <p className="text-sm font-medium text-accent">
-                {totalDiscountPercent}% bundle discount applied (−{formatCurrency(discountAmount)})
+                {bundleDiscount}% bundle discount applied (−{formatCurrency(discountAmount)})
               </p>
             </>
           )}

@@ -1,33 +1,36 @@
 'use client';
 
+import { useState } from 'react';
 import { useQuoteStore } from '@/store/quote-store';
-import { formatCurrency } from '@/lib/constants';
-import { ShoppingCart } from 'lucide-react';
+import { formatCurrency, BUNDLE_DISCOUNT_PERCENT } from '@/lib/constants';
+import { ShoppingCart, AlertCircle } from 'lucide-react';
 import VehicleCoverageSummary from './VehicleCoverageSummary';
 
 export default function CartReview() {
   const { vehicles, getMasterPrice, setStep, setVehiclePreview, addVehicleSlot } = useQuoteStore();
 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
   const masterTotal = getMasterPrice();
 
-  // Filter vehicles that have a coverage selected
   const coveredVehicles = vehicles.filter((v) => v.vehicle && v.coverage);
 
-  // Bundle discount: 10% for 2+ vehicles
-  const BUNDLE_DISCOUNT_PERCENT = 10;
   const bundleDiscount = coveredVehicles.length >= 2 ? BUNDLE_DISCOUNT_PERCENT : 0;
-  const totalDiscountPercent = bundleDiscount;
-  const discountAmount = masterTotal * (totalDiscountPercent / 100);
+  const discountAmount = masterTotal * (bundleDiscount / 100);
   const discountedTotal = masterTotal - discountAmount;
-  const hasBundleDiscount = totalDiscountPercent > 0;
+  const hasBundleDiscount = bundleDiscount > 0;
 
   async function handleReviewSub() {
-    if (coveredVehicles.length > 0) {
+    if (coveredVehicles.length === 0) return;
+
+    setLoading(true);
+    setError('');
+
+    try {
       const contracts = coveredVehicles.map((v) => {
         const today = new Date().toISOString().split('T')[0];
         return {
-
-
           coverages: [
             {
               term: {
@@ -39,8 +42,6 @@ export default function CartReview() {
               ...v.coverage,
             },
           ],
-
-          // coverages: [v.coverage],
           combineForms: false,
           dealerNumber: process.env.NEXT_PUBLIC_DEALER_NUMBER_AUTO ?? '',
           saleDate: today,
@@ -48,34 +49,37 @@ export default function CartReview() {
           startingOdometer: v.saleOdometer,
           endingOdometer: v.saleOdometer + (v.coverage!.termOdometer ?? 0),
           vehicle: v.vehicle,
-          //customer: customerData,
         };
       });
 
       const contPreview = await fetch('/api/coverage/preview', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ contracts }),
       });
 
       const contPrevData = await contPreview.json();
-      if (!contPrevData.results[0].success) {
-        console.error("Error in contract preview:", contPrevData);
+
+      if (!contPreview.ok || !contPrevData.results?.[0]?.success) {
+        setError('Unable to generate coverage preview. Please try again.');
         return;
       }
 
-
-      contPrevData.results.forEach((preview: any, index: number) => {
-        const buckets = preview.data.contracts[0].contract.buckets;
+      contPrevData.results.forEach((preview: Record<string, unknown>, index: number) => {
+        const data = preview.data as Record<string, unknown>;
+        const contracts = data.contracts as Record<string, unknown>[];
+        const contract = contracts[0].contract as Record<string, unknown>;
+        const buckets = contract.buckets as { code: string; amount: number; description: string }[];
         setVehiclePreview(index, buckets);
-
       });
 
       setStep('checkout');
+    } catch {
+      setError('Something went wrong while preparing your checkout. Please try again.');
+    } finally {
+      setLoading(false);
     }
-  };
+  }
 
   const canProceed = coveredVehicles.length > 0;
 
@@ -116,28 +120,47 @@ export default function CartReview() {
           </div>
           {hasBundleDiscount && (
             <p className="text-sm text-accent font-medium">
-              {totalDiscountPercent}% bundle discount applied (−{formatCurrency(discountAmount)})
+              {bundleDiscount}% bundle discount applied (−{formatCurrency(discountAmount)})
             </p>
           )}
         </div>
       </div>
+
+      {/* Error */}
+      {error && (
+        <div className="flex items-start gap-2 rounded-lg bg-red-50 p-4 text-sm text-red-700">
+          <AlertCircle className="mt-0.5 h-4 w-4 flex-shrink-0" />
+          <span>{error}</span>
+        </div>
+      )}
 
       {/* Actions */}
       <div className="flex flex-col gap-3 sm:flex-row">
         {coveredVehicles.length < 2 && (
           <button
             onClick={() => { addVehicleSlot(); setStep('vehicle-info'); }}
-            className="flex-1 rounded-lg border border-navy-100 bg-white px-6 py-3 text-sm font-semibold text-navy-700 transition hover:bg-navy-50"
+            disabled={loading}
+            className="flex-1 rounded-lg border border-navy-100 bg-white px-6 py-3 text-sm font-semibold text-navy-700 transition hover:bg-navy-50 disabled:opacity-50"
           >
             Add More Coverage
           </button>
         )}
         <button
           onClick={handleReviewSub}
-          disabled={!canProceed}
+          disabled={!canProceed || loading}
           className="flex-1 rounded-lg bg-accent px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-accent/20 transition hover:bg-accent-hover hover:scale-[1.02] active:scale-100 disabled:opacity-50 disabled:pointer-events-none"
         >
-          Proceed to Checkout
+          {loading ? (
+            <span className="flex items-center justify-center gap-2">
+              <svg className="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+              </svg>
+              Preparing Checkout...
+            </span>
+          ) : (
+            'Proceed to Checkout'
+          )}
         </button>
       </div>
     </div>
