@@ -8,8 +8,12 @@ interface PlanCardProps {
   frequency: string;
   features: string[];
   isRecommended?: boolean;
+  /** Show "Best Value" badge (e.g. only on Premium tier) */
+  showBestValueBadge?: boolean;
   tierLevel: 1 | 2 | 3 | 4;
   onSelect: () => void;
+  /** Called when the user clicks the card to focus/highlight it */
+  onTierClick?: () => void;
 }
 
 const EXCLUDED_BY_TIER: Record<number, string[]> = {
@@ -32,22 +36,28 @@ export default function PlanCard({
   frequency,
   features,
   isRecommended = false,
+  showBestValueBadge = false,
   tierLevel,
   onSelect,
+  onTierClick,
 }: PlanCardProps) {
   const excluded = EXCLUDED_BY_TIER[tierLevel] ?? [];
   const stars = TIER_STARS[tierLevel] ?? 1;
 
   return (
     <div
-      className={`relative flex flex-col rounded-2xl transition-all duration-200 ${
+      className={`relative flex flex-1 flex-col min-h-0 rounded-2xl transition-all duration-200 ${
         isRecommended
           ? 'scale-105 border-2 border-accent bg-white shadow-xl ring-1 ring-accent/10'
           : 'border border-navy-100 bg-navy-50 shadow-md hover:shadow-lg'
-      }`}
+      } ${onTierClick ? 'cursor-pointer' : ''}`}
+      onClick={onTierClick}
+      role={onTierClick ? 'button' : undefined}
+      tabIndex={onTierClick ? 0 : undefined}
+      onKeyDown={onTierClick ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onTierClick(); } } : undefined}
     >
-      {/* Best Value Badge */}
-      {isRecommended && (
+      {/* Best Value Badge - only on Premium (recommended tier) */}
+      {showBestValueBadge && (
         <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
           <span className="inline-flex items-center gap-1 rounded-full bg-accent px-4 py-1 text-xs font-bold uppercase tracking-wide text-navy-950 shadow-md">
             Best Value
@@ -103,7 +113,10 @@ export default function PlanCard({
 
         {/* Action Button */}
         <button
-          onClick={onSelect}
+          onClick={(e) => {
+            e.stopPropagation();
+            onSelect();
+          }}
           className={`w-full rounded-lg px-4 py-3 text-sm font-semibold transition hover:scale-[1.02] active:scale-100 ${
             isRecommended
               ? 'bg-accent text-navy-950 shadow-lg shadow-accent/20 hover:bg-accent-hover'

@@ -6,7 +6,7 @@ const FORT_POINT_GATEWAY_URL = "https://secure.fppgateway.com/api/transact.php";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { token, tokenType, card, amount } = body;
+    const { token, tokenType, card, amount, customerInfo, paymentType, termTotal, monthlyPrice } = body;
 
     if (!amount) {
       return NextResponse.json(
@@ -23,9 +23,10 @@ export async function POST(request: NextRequest) {
     }
 
     const formParams = new URLSearchParams();
-    formParams.append("type", "sale");
+    formParams.append("type", "auth");
     formParams.append("security_key", FORT_POINT_SECURITY_KEY || "");
     formParams.append("amount", String(amount));
+    formParams.append("customer_receipt", "true");
 
     if (token) {
       formParams.append("payment_token", token);
@@ -38,6 +39,29 @@ export async function POST(request: NextRequest) {
       if (card.exp) {
         formParams.append("ccexp", card.exp);
       }
+    }
+
+    if (customerInfo) {
+      formParams.append("first_name", customerInfo.firstName);
+      formParams.append("last_name", customerInfo.lastName);
+      formParams.append("address1", customerInfo.address.address1);
+      formParams.append("city", customerInfo.address.city);
+      formParams.append("state", customerInfo.address.state);
+      formParams.append("zip", customerInfo.address.postalCode);
+      formParams.append("country", customerInfo.address.countryCode);
+      formParams.append("phone", customerInfo.phone);
+      formParams.append("email", customerInfo.email);
+    }
+
+    if (paymentType === "buydown") {
+      formParams.append("billing_method", "recurring");
+      formParams.append("recurring", "add_subscription");
+      //formParams.append("plan_id", "");
+      formParams.append("plan_payments", termTotal);
+      formParams.append("plan_amount", monthlyPrice);
+      formParams.append("month_frequency", "1");
+      formParams.append("day_of_month", "1");
+
     }
 
     const response = await fetch(FORT_POINT_GATEWAY_URL, {
@@ -76,6 +100,7 @@ export async function POST(request: NextRequest) {
       response: parsedResponse.response,
       response_code: parsedResponse.response_code,
       transactionid: parsedResponse.transactionid,
+      subscriptionid: parsedResponse?.subscription_id,
       statusMessage,
     });
   } catch (error) {

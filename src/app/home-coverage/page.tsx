@@ -208,7 +208,7 @@ export default function HomeCoveragePage() {
             and choose coverage that safeguards your home for years to come.
           </p>
           <Link
-            href="/quote"
+            href="/quote?product=home"
             className="group mt-10 inline-flex items-center gap-2 rounded-xl bg-accent px-10 py-4 text-lg font-bold text-navy-950 shadow-lg shadow-accent/20 transition hover:bg-accent-hover hover:scale-105"
           >
             Secure Your Home Coverage

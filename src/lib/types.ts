@@ -78,6 +78,7 @@ export interface VehicleCoverage {
 export interface PreviewBucket {
   amount: number;
   description: string;
+  code: string;
 }
 
 // ─── Home Coverage ─────────────────────────────────────────────────

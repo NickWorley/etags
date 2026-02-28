@@ -5,11 +5,15 @@ import Script from 'next/script';
 import { useQuoteStore } from '@/store/quote-store';
 import { US_STATES, formatCurrency } from '@/lib/constants';
 import { AlertCircle, Lock, CreditCard } from 'lucide-react';
+import Link from 'next/link';
+import VehicleCoverageSummary from './VehicleCoverageSummary';
+import HomeCoverageSummary from './HomeCoverageSummary';
 
 declare global {
   interface Window {
     CollectJS?: {
       configure: (config: Record<string, unknown>) => void;
+      startPaymentRequest: () => void;
     };
   }
 }
@@ -24,6 +28,7 @@ export default function CheckoutStep() {
     setPaymentType,
     getMasterPrice,
     setStep,
+    setAmountPaidAtCheckout,
   } = useQuoteStore();
 
   const [firstName, setFirstName] = useState(customer?.firstName ?? '');
@@ -35,6 +40,8 @@ export default function CheckoutStep() {
   const [state, setState] = useState(customer?.address?.state ?? '');
   const [zip, setZip] = useState(customer?.address?.postalCode ?? '');
 
+ 
+
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -42,6 +49,35 @@ export default function CheckoutStep() {
 
   const masterPrice = getMasterPrice();
   const configuredRef = useRef(false);
+
+  // Bundle discount: 10% for 2+ vehicles (car bundle), 10% for home (home bundle); max 20%
+  const coveredVehicles = vehicles.filter((v) => v.vehicle && v.coverage);
+  const BUNDLE_DISCOUNT_PERCENT = 10;
+  const bundleDiscount = ((homeCoverage && coveredVehicles.length >=1) || (coveredVehicles.length >= 2)) ? BUNDLE_DISCOUNT_PERCENT : 0;
+  //const carBundleDiscount = coveredVehicles.length >= 2 ? BUNDLE_DISCOUNT_PERCENT : 0;
+  //const homeBundleDiscount = (homeCoverage && coveredVehicles.length >= 1) ? BUNDLE_DISCOUNT_PERCENT : 0;
+  //const totalDiscountPercent = carBundleDiscount + homeBundleDiscount;
+  const totalDiscountPercent = bundleDiscount;
+  const discountAmount = masterPrice * (totalDiscountPercent / 100);
+  const discountedTotal = masterPrice - discountAmount;
+  const hasBundleDiscount = totalDiscountPercent > 0;
+
+  // Buydown: reserve-based initial payment and term (matches payment API)
+  const BUYDOWN_TERM_MONTHS = 6;
+  const targetCodes = ['TOTALRATE', 'RESERVE', 'SURCHARGE', 'ROADF', 'ROADR'];
+  const reserveVehicleSums = vehicles.reduce((total, v) => {
+    if (!v.previewBuckets) return total;
+    return total + v.previewBuckets.filter((b) => targetCodes.includes(b.code)).reduce((sum, b) => sum + b.amount, 0);
+  }, 0);
+  const buydownInitialAmount = reserveVehicleSums + (Number(homeCoverage?.priceBreakdown.reserve) || 0);
+  const totalDue = hasBundleDiscount ? discountedTotal : masterPrice;
+  const buydownRemaining = Math.max(0, totalDue - buydownInitialAmount);
+  const buydownMonthly = BUYDOWN_TERM_MONTHS > 0 ? buydownRemaining / BUYDOWN_TERM_MONTHS : 0;
+
+  const [initPayment, setInitPayment] = useState(
+    hasBundleDiscount ? discountedTotal : masterPrice
+  );
+  const latestInitPaymentRef = useRef(initPayment);
 
   const tokenizationKey = process.env.NEXT_PUBLIC_FORT_POINT_TOKENIZATION_KEY ?? '';
 
@@ -53,6 +89,21 @@ export default function CheckoutStep() {
         return;
       }
 
+      const { paymentType } = useQuoteStore.getState();
+
+      const {
+        firstName,
+        lastName,
+        phone,
+        email,
+        address1,
+        city,
+        state,
+        zip,
+      } = latestFormRef.current;
+
+      const currentInitPayment = latestInitPaymentRef.current;
+
       // Save customer to store
       const customerData = {
         firstName: firstName.trim(),
@@ -60,17 +111,21 @@ export default function CheckoutStep() {
         phone: phone.trim(),
         email: email.trim(),
         address: {
-          countryCode: 'US',
+          countryCode: 'USA',
           address1: address1.trim(),
           city: city.trim(),
           state,
           postalCode: zip.trim(),
         },
       };
+      
       setCustomer(customerData);
 
       try {
-        // Process payment
+        // Process payment (home-only has no vehicle terms; use 1 and 0 for monthly)
+
+        const termTotal = 6;
+        const monthlyPrice = hasBundleDiscount ? (discountedTotal - currentInitPayment) / termTotal : (masterPrice - currentInitPayment) / termTotal;
         const paymentRes = await fetch('/api/payment/process', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -78,14 +133,16 @@ export default function CheckoutStep() {
             token: response.token,
             tokenType: response.tokenType,
             card: response.card,
-            amount: masterPrice.toFixed(2),
+            amount: currentInitPayment.toFixed(2),
             paymentType,
-            customer: customerData,
+            customerInfo: customerData,
+            termTotal,
+            monthlyPrice: monthlyPrice.toFixed(2),
+            //customer: customerData,
           }),
         });
 
         const paymentData = await paymentRes.json();
-
         if (!paymentRes.ok || paymentData.response_code !== '100') {
           setError(
             paymentData.responsetext ||
@@ -95,13 +152,35 @@ export default function CheckoutStep() {
           return;
         }
 
+        
+
+        let autoSuccess = true;
+        let homeSuccess = true;
+        
+        let autoContractResults: any[] = [];
+        let homeContractResult: any = null;
+
         // Create auto contracts
         const coveredVehicles = vehicles.filter((v) => v.vehicle && v.coverage);
         if (coveredVehicles.length > 0) {
           const contracts = coveredVehicles.map((v) => {
             const today = new Date().toISOString().split('T')[0];
             return {
-              coverages: [v.coverage],
+
+
+              coverages: [
+                {                
+                  term: {
+                    termOdometer: v.coverage!.termOdometer,
+                    termMonths: v.coverage!.termMonths,
+                    deductible: v.coverage!.deductible,
+                  },
+                  
+                  ...v.coverage,
+                },
+              ],
+
+              // coverages: [v.coverage],
               dealerNumber: process.env.NEXT_PUBLIC_DEALER_NUMBER_AUTO ?? '',
               saleDate: today,
               saleOdometer: v.saleOdometer,
@@ -111,18 +190,35 @@ export default function CheckoutStep() {
               customer: customerData,
             };
           });
-
-          await fetch('/api/contract/create', {
+          
+          const autoContractRes = await fetch('/api/contract/create', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ contracts }),
           });
+
+          
+          const autoConData = await autoContractRes.json();
+          const results = Array.isArray(autoConData.results)
+            ? autoConData.results
+            : [];
+
+          autoContractResults = results;
+          const failed = results.find((r: any) => !r.success);
+
+          if (failed) {
+            autoSuccess = false;
+            setError(
+              failed?.error?.error?.details?.[0]?.message ||
+                'Auto contract failed to create. Please make sure you have filled out all vehicle descriptors or do not have a current plan active.'
+            );
+          }
         }
 
         // Create home contract
         if (homeCoverage) {
           const addOnCodes = homeCoverage.addOns.map((a) => a.code);
-          await fetch('/api/contract/home', {
+          const homeRes = await fetch('/api/contract/home', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -139,8 +235,92 @@ export default function CheckoutStep() {
               },
             }),
           });
+
+          const homeData = await homeRes.json();
+          homeContractResult = homeData;
+
+          if (homeData.error) {
+              homeSuccess = false;
+              setError(
+                homeData.error || 
+                'Home contract failed to create. Please verify your information and try again.'
+            );
+          }
+          
+          
         }
 
+        if (!autoSuccess || !homeSuccess) {
+          try {
+            const cancelConRes = await fetch('/api/payment/cancel', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                transactionId: paymentData.transactionid,
+              }),
+            });
+
+            await cancelConRes.json();
+
+          } catch (e) {
+            console.error('Error cancelling payment after contract failure', e);
+          }
+          setLoading(false);
+          return;
+        }
+
+        // console.log("Here is the vehicle response:", autoContractResults);
+        // console.log("Here is the home contract response:", homeContractResult);
+        // console.log("Here is the payment response:", paymentData);
+
+        const captureRes = await fetch('/api/payment/capture', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            transactionId: paymentData.transactionid,
+            amount: currentInitPayment.toFixed(2),
+            paymentType,
+            subscriptionid: paymentData?.subscriptionid,
+            autoDetails: autoContractResults,
+            homeDetails: homeContractResult
+          }),
+        });
+
+        const captureData = await captureRes.json();
+        if (!captureRes.ok || captureData.response_code !== '100') {
+          setError(
+            captureData.responsetext ||
+              'Payment capture failed. Please contact support.'
+          );
+          setLoading(false);
+          return;
+        }
+
+
+        const noteRes = await fetch('/api/contract/add-note', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            paymentType,
+            transactionid: paymentData.transactionid,
+            autoDetails: autoContractResults,
+          }),
+        });
+
+        const noteData = await noteRes.json();
+
+        const noteResults = Array.isArray(noteData) ? noteData : [];
+        const failed = noteResults.find((r: any) => !r.success);
+
+        if (failed) {
+          setError(
+            noteData || 
+            'Error adding note to PCRS'
+          );
+        }
+        
+
+        setAmountPaidAtCheckout(currentInitPayment);
         setStep('success');
       } catch {
         setError('An error occurred while processing your order. Please try again.');
@@ -149,16 +329,43 @@ export default function CheckoutStep() {
       }
     },
     [
-      firstName, lastName, phone, email, address1, city, state, zip,
-      masterPrice, paymentType, vehicles, homeCoverage, setCustomer, setStep,
+      masterPrice, vehicles, homeCoverage, setCustomer, setStep,
     ]
   );
 
+  const latestFormRef = useRef({
+    firstName,
+    lastName,
+    phone,
+    email,
+    address1,
+    city,
+    state,
+    zip,
+  });
+
   // Configure Collect.js after script loads
   useEffect(() => {
+
+    latestFormRef.current = {
+      firstName,
+      lastName,
+      phone,
+      email,
+      address1,
+      city,
+      state,
+      zip,
+    };
+
+    latestInitPaymentRef.current = initPayment;
+
+
     if (collectReady && window.CollectJS && !configuredRef.current) {
+      
       configuredRef.current = true;
       window.CollectJS.configure({
+        paymentSelector: '#payButton',
         variant: 'inline',
         styleSniffer: true,
         fields: {
@@ -175,10 +382,12 @@ export default function CheckoutStep() {
             placeholder: 'CVV',
           },
         },
-        callback: handleCollectResponse,
+        callback: (response: { token?: string; card?: { number?: string; exp?: string }; tokenType?: string }) => {
+          handleCollectResponse(response);
+        },
       });
     }
-  }, [collectReady, handleCollectResponse]);
+  }, [firstName, lastName, phone, email, address1, city, state, zip, initPayment, collectReady, handleCollectResponse]);
 
   function validateForm(): boolean {
     if (!firstName.trim() || !lastName.trim()) {
@@ -211,10 +420,48 @@ export default function CheckoutStep() {
   function handlePayClick() {
     setError('');
     if (!validateForm()) return;
+    
     setLoading(true);
 
+    if (!window.CollectJS) {
+      setError('Payment form is still loading. Please try again.');
+      setLoading(false);
+      return;
+    }
+
+    window.CollectJS.startPaymentRequest();
+    
     // Collect.js will handle tokenization and call the callback
     // The pay button triggers Collect.js automatically via its ID
+  }
+
+  function formatPaymentType(paymentType: string) {
+
+    if (paymentType === 'full') {
+      setPaymentType('full');
+      setInitPayment(hasBundleDiscount ? discountedTotal : masterPrice);
+    }
+
+    else if (paymentType === 'buydown') {
+      const targetCodes = [
+        'TOTALRATE',
+        'RESERVE',
+        'SURCHARGE',
+        'ROADF',
+        'ROADR',
+      ];
+
+      const reserveVehicleSums = vehicles.reduce((total, v) => {
+        if (!v.previewBuckets) return total;
+        const vehicleTotal = v.previewBuckets.filter((bucket) => targetCodes.includes(bucket.code)).reduce((sum, bucket) => sum + bucket.amount, 0);
+        return total + vehicleTotal;
+      }, 0);
+
+      const totalReserveSum = reserveVehicleSums + (Number(homeCoverage?.priceBreakdown.reserve) || 0);
+      setPaymentType('buydown');
+      setInitPayment(totalReserveSum);
+    }
+
   }
 
   return (
@@ -229,6 +476,22 @@ export default function CheckoutStep() {
 
       <h2 className="text-2xl font-bold font-display text-navy-900">Checkout</h2>
 
+      {/* Coverage Summary - what you're buying */}
+      <div className="space-y-4">
+        <h3 className="text-sm font-semibold text-navy-500 uppercase tracking-wide">
+          Coverage Summary
+        </h3>
+        {coveredVehicles.filter((v) => v.costs).map((v, idx) => (
+          <VehicleCoverageSummary
+            key={idx}
+            vehicle={v.vehicle!}
+            coverage={v.coverage!}
+            costs={v.costs!}
+          />
+        ))}
+        {homeCoverage && <HomeCoverageSummary homeCoverage={homeCoverage} />}
+      </div>
+
       {/* Payment Type Toggle */}
       <div className="rounded-2xl bg-white p-6 shadow-md">
         <h3 className="text-sm font-semibold text-navy-500 uppercase tracking-wide mb-3">
@@ -236,7 +499,8 @@ export default function CheckoutStep() {
         </h3>
         <div className="flex gap-3">
           <button
-            onClick={() => setPaymentType('full')}
+            onClick={() => formatPaymentType('full')}
+            //onClick={() => setPaymentType('full')}
             className={`flex-1 rounded-lg border-2 px-4 py-3 text-sm font-semibold transition ${
               paymentType === 'full'
                 ? 'border-accent bg-accent/5 text-accent'
@@ -246,7 +510,8 @@ export default function CheckoutStep() {
             Pay in Full
           </button>
           <button
-            onClick={() => setPaymentType('buydown')}
+            onClick={() => formatPaymentType('buydown')}
+            //onClick={() => setPaymentType('buydown')}
             className={`flex-1 rounded-lg border-2 px-4 py-3 text-sm font-semibold transition ${
               paymentType === 'buydown'
                 ? 'border-accent bg-accent/5 text-accent'
@@ -256,11 +521,51 @@ export default function CheckoutStep() {
             Buy-Down Plan
           </button>
         </div>
-        <div className="mt-3 text-right">
+        <div className="mt-3 space-y-1 text-right">
+          {hasBundleDiscount && (
+            <>
+              <div className="text-navy-600">
+                <span className="line-through">{formatCurrency(masterPrice)}</span>
+                <span className="ml-2 font-bold text-navy-900">
+                  {formatCurrency(discountedTotal)}
+                </span>
+              </div>
+              <p className="text-sm font-medium text-accent">
+                {totalDiscountPercent}% bundle discount applied (−{formatCurrency(discountAmount)})
+              </p>
+            </>
+          )}
           <span className="text-lg font-bold text-navy-900">
-            Total: {formatCurrency(masterPrice)}
+            Total: {formatCurrency(initPayment)}
           </span>
         </div>
+        {paymentType === 'buydown' && (
+          <div className="mt-4 rounded-xl border-2 border-accent/30 bg-accent/5 p-4">
+            <h4 className="text-sm font-semibold text-navy-700 mb-3">Buy-Down Plan Summary</h4>
+            <ul className="space-y-2 text-sm">
+              <li className="flex justify-between">
+                <span className="text-navy-600">Order total</span>
+                <span className="font-medium text-navy-900">{formatCurrency(totalDue)}</span>
+              </li>
+              <li className="flex justify-between">
+                <span className="text-navy-600">Initial payment (due today)</span>
+                <span className="font-medium text-navy-900">{formatCurrency(buydownInitialAmount)}</span>
+              </li>
+              <li className="flex justify-between">
+                <span className="text-navy-600">Remaining balance</span>
+                <span className="font-medium text-navy-900">{formatCurrency(buydownRemaining)}</span>
+              </li>
+              <li className="flex justify-between">
+                <span className="text-navy-600">Term duration</span>
+                <span className="font-medium text-navy-900">{BUYDOWN_TERM_MONTHS} months</span>
+              </li>
+              <li className="flex justify-between border-t border-navy-200 pt-2 mt-2">
+                <span className="font-semibold text-navy-700">Monthly payment</span>
+                <span className="font-bold text-accent">{formatCurrency(buydownMonthly)}</span>
+              </li>
+            </ul>
+          </div>
+        )}
       </div>
 
       {/* Customer Information */}
@@ -445,7 +750,10 @@ export default function CheckoutStep() {
           />
           <span className="text-sm text-navy-700">
             I have read and agree to the{' '}
-            <span className="font-semibold text-accent">Vehicle Service Contract Terms</span>.
+            <Link href="/terms" className="font-semibold text-accent underline underline-offset-2">
+              Vehicle Service Contract Terms
+            </Link>
+            .
           </span>
         </label>
       </div>
@@ -474,7 +782,7 @@ export default function CheckoutStep() {
             Processing...
           </span>
         ) : (
-          `Pay ${formatCurrency(masterPrice)}`
+          `Pay ${formatCurrency(initPayment)}`
         )}
       </button>
 

@@ -99,7 +99,7 @@ export default function Footer() {
             <ul className="space-y-3">
               <li>
                 <Link
-                  href="#"
+                  href="/terms"
                   className="text-sm text-navy-500 hover:text-navy-100 transition-colors"
                 >
                   Terms of Service
@@ -115,7 +115,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="#"
+                  href="/cookies"
                   className="text-sm text-navy-500 hover:text-navy-100 transition-colors"
                 >
                   Cookie Policy

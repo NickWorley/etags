@@ -5,10 +5,11 @@ import { formatCurrency } from '@/lib/constants';
 import { CheckCircle, Printer, Home } from 'lucide-react';
 
 export default function SuccessPage() {
-  const { vehicles, homeCoverage, getMasterPrice, reset } = useQuoteStore();
+  const { vehicles, homeCoverage, getMasterPrice, amountPaidAtCheckout, reset } = useQuoteStore();
 
-  const masterTotal = getMasterPrice();
   const coveredVehicles = vehicles.filter((v) => v.vehicle && v.coverage && v.costs);
+  /** Show the amount actually charged (after bundle discount / buydown), or master total if not set */
+  const totalPaid = amountPaidAtCheckout ?? getMasterPrice();
 
   function handlePrint() {
     window.print();
@@ -78,7 +79,7 @@ export default function SuccessPage() {
 
         <div className="flex justify-between pt-2">
           <span className="text-lg font-bold text-navy-900">Total Paid</span>
-          <span className="text-lg font-bold text-navy-900">{formatCurrency(masterTotal)}</span>
+          <span className="text-lg font-bold text-navy-900">{formatCurrency(totalPaid)}</span>
         </div>
       </div>
 

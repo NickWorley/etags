@@ -2,14 +2,15 @@
 
 import { useState, useEffect } from 'react';
 import { useQuoteStore } from '@/store/quote-store';
-import { AlertCircle, Car } from 'lucide-react';
+import { AlertCircle, Car, ArrowLeft } from 'lucide-react';
 
 interface VehicleInfoStepProps {
   initialVin?: string;
   initialMileage?: number;
+  startedWithHome?: boolean;
 }
 
-export default function VehicleInfoStep({ initialVin, initialMileage }: VehicleInfoStepProps) {
+export default function VehicleInfoStep({ initialVin, initialMileage, startedWithHome = false }: VehicleInfoStepProps) {
   const { currentVehicleIndex, setVehicleInfo, setAvailableRates, setStep } = useQuoteStore();
 
   const currentYear = new Date().getFullYear();
@@ -131,6 +132,15 @@ export default function VehicleInfoStep({ initialVin, initialMileage }: VehicleI
   return (
     <div className="mx-auto max-w-xl">
       <div className="rounded-2xl bg-white p-6 shadow-md sm:p-8">
+        {(currentVehicleIndex > 0 || startedWithHome) && (
+          <button
+            onClick={() => setStep('bundle-prompt')}
+            className="flex items-center gap-2 text-sm font-medium text-navy-600 hover:text-accent transition"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back
+          </button>
+        )}
         <div className="flex items-center gap-3 mb-6">
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-muted">
             <Car className="h-5 w-5 text-accent" />

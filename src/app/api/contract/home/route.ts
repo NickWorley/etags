@@ -30,6 +30,14 @@ export async function POST(request: NextRequest) {
       ? lossCodes.join(";")
       : lossCodes || "";
 
+
+    const easternDate = new Date().toLocaleDateString('en-US', {
+      timeZone: 'America/New_York',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    });
+
     const payload = {
       dealerNumber: DEALER_NUMBER_HOME,
       dealerInvoiceNumber: "C4C25",
@@ -42,16 +50,26 @@ export async function POST(request: NextRequest) {
       customer: {
         firstName,
         lastName,
-        phone,
-        email,
         address: {
           address1: address.address1,
           city: address.city,
           state: address.state,
-          postalCode: address.postalCode,
-          countryCode: address.countryCode,
+          zipCode: address.postalCode,
+          country: address.countryCode,
+        },
+        contact: {
+          phone: {
+            mainPhone: phone,
+          },
+          email,
         },
       },
+      transactionDate: easternDate,
+      products: [
+        {
+          productPurchaseDate: easternDate
+        },
+      ],
     };
 
     const accessToken = await getHomeAccessToken();
