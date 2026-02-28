@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { Shield, DollarSign, ShieldCheck, Check, ArrowRight } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Auto Coverage | Click for Coverage',
+  title: 'Auto Coverage | eTags',
   description:
     'Explore our comprehensive vehicle service contract coverage tiers. From basic powertrain to complete bumper-to-bumper protection.',
 };
@@ -113,7 +113,7 @@ export default function AutoCoveragePage() {
           </h2>
           <div className="mx-auto mt-3 h-1 w-16 rounded-full bg-accent" />
           <p className="mt-8 text-lg leading-relaxed text-navy-600">
-            At Click4Coverage, we offer customized coverage tiers designed specifically to fit your
+            At eTags, we offer customized coverage tiers designed specifically to fit your
             family&apos;s lifestyles and budget. Enjoy complete peace of mind with our plans ranging
             from basic safeguards to premium coverages, protecting your car from unexpected costs.
             Key benefits include Engine, Transmission, and additional vehicle component coverage.

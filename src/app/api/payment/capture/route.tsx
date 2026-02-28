@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
     captureParams.append("security_key", FORT_POINT_SECURITY_KEY || "");
     captureParams.append("transactionid", transactionId);
     captureParams.append("amount", amount);
-    captureParams.append("merchant_defined_field_1", "This transaction was processed through the Click-4-Coverage website");
+    captureParams.append("merchant_defined_field_1", "This transaction was processed through the eTags website");
     
     if (autoDetails && Array.isArray(autoDetails) && autoDetails.length > 0) {
       // collect all contract numbers from autoDetails
@@ -41,10 +41,10 @@ export async function POST(request: NextRequest) {
     }
 
     if (paymentType === "full") {
-      captureParams.append("merchant_defined_field_4", "This user payed the transaction in full");
+      captureParams.append("merchant_defined_field_4", "This user paid the transaction in full");
     }
     else if (paymentType === "buydown") {
-      captureParams.append("merchant_defined_field_4", "This user payed using the buydown feature");
+      captureParams.append("merchant_defined_field_4", "This user paid using the buydown feature");
       captureParams.append("merchant_defined_field_5", "FortPoint Subscription ID:\n" + subscriptionid);
     }
     

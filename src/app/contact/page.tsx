@@ -31,7 +31,7 @@ export default function ContactPage() {
         <div className="relative z-10 mx-auto max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8 lg:py-40">
           <div className="mx-auto max-w-3xl text-center">
             <h1 className="font-display text-4xl leading-tight text-white sm:text-5xl lg:text-6xl">
-              Get in Touch with Click4Coverage
+              Get in Touch with eTags
             </h1>
             <h3 className="mt-4 text-xl font-semibold text-accent sm:text-2xl">
               We&apos;re Here to Help You!
@@ -70,10 +70,10 @@ export default function ContactPage() {
               <div>
                 <p className="text-sm font-medium text-navy-500">Email Us</p>
                 <a
-                  href="mailto:support@click4coverage.com"
+                  href="mailto:support@etags.com"
                   className="whitespace-nowrap text-lg font-bold text-navy-900 transition hover:text-accent"
                 >
-                  support@click4coverage.com
+                  support@etags.com
                 </a>
               </div>
             </div>

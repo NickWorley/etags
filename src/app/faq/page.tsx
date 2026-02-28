@@ -5,7 +5,7 @@ import { ChevronDown } from 'lucide-react';
 
 const faqItems = [
   {
-    question: 'What types of coverage does Click4Coverage offer?',
+    question: 'What types of coverage does eTags offer?',
     answer:
       'We offer four tiers of auto coverage, as well as three levels of home coverage, each designed to cater to different needs and budgets. Whether you\'re looking for basic coverage or comprehensive protection, we have a plan for you.',
   },
@@ -20,7 +20,7 @@ const faqItems = [
       'Yes, most of our coverages are transferable. This can increase the resale value of your vehicle or home, providing added benefit to both you and the buyer.',
   },
   {
-    question: 'How does the purchasing process work at Click4Coverage?',
+    question: 'How does the purchasing process work at eTags?',
     answer:
       'Our purchasing process is simple and straightforward. Browse our coverage plans, choose the one that suits your needs, and complete the purchase online.',
   },
@@ -30,12 +30,12 @@ const faqItems = [
       'Home coverage is a service agreement that covers specific repairs and services for your home. It provides financial protection against unexpected repair costs, ensuring your home remains in optimal condition.',
   },
   {
-    question: 'How do I file a claim with Click4Coverage?',
+    question: 'How do I file a claim with eTags?',
     answer:
       'Filing a claim is easy. Simply navigate to our claims portal, or call the claims number on your fulfillment packet, provide the necessary details, and we\'ll guide you through the process to ensure a smooth experience.',
   },
   {
-    question: 'Are there any additional benefits with a Click4Coverage coverage?',
+    question: 'Are there any additional benefits with a eTags coverage?',
     answer: 'Yes, our coverages often include additional optional selections.',
   },
   {
@@ -44,9 +44,9 @@ const faqItems = [
       'The duration of coverage depends on the plan selected. We offer flexible terms to suit your needs, ranging from short-term to long-term.',
   },
   {
-    question: 'What makes Click4Coverage different?',
+    question: 'What makes eTags different?',
     answer:
-      'Click4Coverage stands out with our commitment to customer satisfaction, transparent pricing, and comprehensive coverage options tailored to meet diverse needs.',
+      'eTags stands out with our commitment to customer satisfaction, transparent pricing, and comprehensive coverage options tailored to meet diverse needs.',
   },
 ];
 

@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
       success = true;
       statusMessage = "Transaction successfully voided. No charge/statement will appear on your payment method.";
     } else if (respCode === 2) {
-      statusMessage = "Transaction failed to void. No charge has gone through with your payment, but please contract support immediately to successfully void your payment.";
+      statusMessage = "Transaction failed to void. No charge has gone through with your payment, but please contact support immediately to successfully void your payment.";
     } else if (respCode === 3) {
       statusMessage = "System error during transaction void. No charge will appear on your payment.";
     }

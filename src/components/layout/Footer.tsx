@@ -36,7 +36,7 @@ export default function Footer() {
                   href="/about"
                   className="text-sm text-navy-500 hover:text-navy-100 transition-colors"
                 >
-                  About Click4Coverage
+                  About eTags
                 </Link>
               </li>
               <li>
@@ -153,11 +153,11 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="mt-12 border-t border-navy-800/60 pt-6 text-center">
           <p className="text-sm text-navy-500">
-            &copy; {new Date().getFullYear()} Click for Coverage. All rights
+            &copy; {new Date().getFullYear()} eTags. All rights
             reserved.
           </p>
           <p className="mt-3 text-navy-600 text-xs max-w-2xl mx-auto leading-relaxed">
-            Click for Coverage sells Vehicle Service Contracts, not manufacturer
+            eTags sells Vehicle Service Contracts, not manufacturer
             coverage. All plans are administered by PCRS and backed by licensed
             insurers. See your Service Contract for complete terms, conditions,
             and exclusions.

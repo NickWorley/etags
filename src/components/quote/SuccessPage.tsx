@@ -33,7 +33,7 @@ export default function SuccessPage() {
       <div>
         <h1 className="text-3xl font-extrabold font-display text-navy-900">Your Coverage is Active!</h1>
         <p className="mt-2 text-navy-500">
-          Thank you for choosing Click for Coverage. Your protection is now in effect.
+          Thank you for choosing eTags. Your protection is now in effect.
         </p>
       </div>
 

@@ -3,9 +3,9 @@ import Link from 'next/link';
 import { Shield, Users, Lightbulb, ArrowRight } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'About | Click for Coverage',
+  title: 'About | eTags',
   description:
-    'Learn about Click4Coverage - our commitment to exceptional coverage solutions for vehicles and homes.',
+    'Learn about eTags - our commitment to exceptional coverage solutions for vehicles and homes.',
 };
 
 const coreValues = [
@@ -43,7 +43,7 @@ export default function AboutPage() {
               Driven by Excellence
             </h1>
             <p className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-navy-100/80 sm:text-xl">
-              At Click4Coverage, our goal is to deliver exceptional coverage solutions that give
+              At eTags, our goal is to deliver exceptional coverage solutions that give
               customers unmatched confidence and security. Driven by a passion for excellence, we
               offer innovative coverage plans and dedicated support, earning us the trust of
               homeowners and drivers nationwide. Transparency and clarity guide every service we
@@ -61,7 +61,7 @@ export default function AboutPage() {
               Building Trust Through Innovation
             </h2>
             <p className="mt-6 text-lg leading-relaxed text-navy-600">
-              At Click4Coverage, our foundation is built upon a commitment to revolutionize home and
+              At eTags, our foundation is built upon a commitment to revolutionize home and
               auto coverage through transparency and customer-focused solutions. From humble
               beginnings, we&apos;ve grown into an industry leader, providing a variety of
               personalized coverage plans designed to protect your investment. Our continuous
@@ -108,7 +108,7 @@ export default function AboutPage() {
             Secure Your Coverage Today
           </h2>
           <p className="mt-6 text-lg leading-relaxed text-navy-100/80">
-            Discover the perfect coverage plan tailored to your needs. Reach out to Click4Coverage
+            Discover the perfect coverage plan tailored to your needs. Reach out to eTags
             now and ensure peace of mind on the road. Our team is ready to assist you in finding the
             best coverage. Act now to protect your investment!
           </p>
