@@ -81,41 +81,6 @@ export interface PreviewBucket {
   code: string;
 }
 
-// ─── Home Coverage ─────────────────────────────────────────────────
-
-export type HomeCoverageType = 'appliance' | 'system' | 'total';
-export type HomeSize = 'less-than-5' | 'between-5-and-8' | 'more-than-8' | 'condo';
-export type CoverageDuration = 1 | 2 | 3;
-
-export interface HomePriceBreakdown {
-  term: string;
-  admin: string;
-  reserve: string;
-  commision: string;
-  total: string;
-  suggestedRetail: string;
-  coverageRate: string;
-}
-
-export interface HomeAddOn {
-  code: string;
-  name: string;
-  price: number;
-}
-
-export interface HomeCoverage {
-  coverageCode: string;
-  coverageTitle: string;
-  coverageType: HomeCoverageType;
-  duration: CoverageDuration;
-  homeSize: HomeSize;
-  homeSizeLabel: string;
-  priceBreakdown: HomePriceBreakdown;
-  addOns: HomeAddOn[];
-  addOnPrice: number;
-  totalFinalPrice: number;
-}
-
 // ─── Customer ──────────────────────────────────────────────────────
 
 export interface CustomerAddress {
@@ -138,7 +103,6 @@ export interface Customer {
 
 export interface Cart {
   vehicles: VehicleCoverage[];
-  home: HomeCoverage | null;
   masterPrice: number;
   paymentType: 'full' | 'buydown';
 }
@@ -177,41 +141,11 @@ export interface CreateAutoContractPayload {
   customer: Customer;
 }
 
-export interface CreateHomeContractPayload {
-  dealerNumber: string;
-  dealerInvoiceNumber: string;
-  storeLocationNumber: string;
-  status: string;
-  coverage: {
-    warrantySKUCode: string;
-    additionalWarranty: string;
-  };
-  customer: {
-    firstName: string;
-    lastName: string;
-    address: {
-      address1: string;
-      city: string;
-      state: string;
-      zipCode: string;
-      country: string;
-    };
-    contact: {
-      phone: { mainPhone: string; mobilePhone: string };
-      email: string;
-    };
-  };
-  transactionDate: string;
-  products: Array<{ productPurchaseDate: string }>;
-}
-
 // ─── Quote Wizard State ────────────────────────────────────────────
 
 export type WizardStep =
   | 'vehicle-info'
   | 'plan-selection'
-  | 'bundle-prompt'
-  | 'home-selection'
   | 'cart-review'
   | 'checkout'
   | 'success';
