@@ -144,19 +144,14 @@ export default function CheckoutStep() {
         if (coveredVehicles.length > 0) {
           const contracts = coveredVehicles.map((v) => {
             const today = new Date().toISOString().split('T')[0];
+            const { termMonths, termOdometer, deductible, ...coverageRest } = v.coverage!;
             return {
               coverages: [
-                {                
-                  term: {
-                    termOdometer: v.coverage!.termOdometer,
-                    termMonths: v.coverage!.termMonths,
-                    deductible: v.coverage!.deductible,
-                  },
-                  
-                  ...v.coverage,
+                {
+                  term: { termOdometer, termMonths, deductible },
+                  ...coverageRest,
                 },
               ],
-
               dealerNumber: process.env.NEXT_PUBLIC_DEALER_NUMBER_AUTO ?? '',
               saleDate: today,
               saleOdometer: v.saleOdometer,

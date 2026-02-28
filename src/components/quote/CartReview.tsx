@@ -30,16 +30,13 @@ export default function CartReview() {
     try {
       const contracts = coveredVehicles.map((v) => {
         const today = new Date().toISOString().split('T')[0];
+        const { termMonths, termOdometer, deductible, ...coverageRest } = v.coverage!;
         return {
           coverages: [
             {
-              term: {
-                termOdometer: v.coverage!.termOdometer,
-                termMonths: v.coverage!.termMonths,
-                deductible: v.coverage!.deductible,
-              },
+              term: { termOdometer, termMonths, deductible },
               generateForm: true,
-              ...v.coverage,
+              ...coverageRest,
             },
           ],
           combineForms: false,
