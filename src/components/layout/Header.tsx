@@ -20,10 +20,7 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50">
-      {/* Thin accent line at the very top */}
-      <div className="h-0.5 bg-gradient-to-r from-accent via-accent-light to-accent" />
-
-      <div className="bg-navy-950/95 backdrop-blur-xl border-b border-glass-border">
+      <div className="bg-navy-900 border-b border-navy-800">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
           {/* Logo */}
           <Link href="/" className="flex-shrink-0">
@@ -64,7 +61,7 @@ export default function Header() {
             </a>
             <Link
               href="/quote"
-              className="rounded-lg bg-accent px-5 py-2 text-sm font-bold text-white shadow-md transition-all hover:bg-accent-hover hover:scale-105"
+              className="rounded-lg bg-accent px-5 py-2 text-sm font-semibold text-navy-950 transition-colors hover:bg-accent-hover"
             >
               Get Quote
             </Link>
@@ -87,14 +84,14 @@ export default function Header() {
 
         {/* Mobile Dropdown Menu */}
         {mobileOpen && (
-          <div className="bg-navy-950/98 backdrop-blur-2xl border-t border-glass-border lg:hidden">
+          <div className="bg-navy-900 border-t border-navy-800 lg:hidden">
             <nav className="mx-auto max-w-7xl space-y-1 px-4 py-4 sm:px-6">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
-                  className={`block px-4 py-3 rounded-lg text-sm font-medium tracking-wide transition-colors hover:bg-glass-strong ${
+                  className={`block px-4 py-3 rounded-lg text-sm font-medium tracking-wide transition-colors hover:bg-navy-800 ${
                     pathname === link.href
                       ? 'text-accent'
                       : 'text-navy-100/70 hover:text-white'
@@ -105,11 +102,11 @@ export default function Header() {
               ))}
 
               {/* Separator before phone + CTA */}
-              <div className="my-3 border-t border-glass-border" />
+              <div className="my-3 border-t border-navy-800" />
 
               <a
                 href="tel:+1-800-555-0199"
-                className="flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium text-navy-100/70 transition-colors hover:bg-glass-strong hover:text-white"
+                className="flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium text-navy-100/70 transition-colors hover:bg-navy-800 hover:text-white"
               >
                 <Phone className="h-4 w-4" />
                 <span>(800) 555-0199</span>
@@ -118,7 +115,7 @@ export default function Header() {
               <Link
                 href="/quote"
                 onClick={() => setMobileOpen(false)}
-                className="mt-2 block rounded-lg bg-accent px-4 py-3 text-center text-sm font-bold text-white shadow-md transition-all hover:bg-accent-hover"
+                className="mt-2 block rounded-lg bg-accent px-4 py-3 text-center text-sm font-semibold text-navy-950 transition-colors hover:bg-accent-hover"
               >
                 Get Quote
               </Link>

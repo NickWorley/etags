@@ -11,7 +11,7 @@ export default function TermsPage() {
         <>
 
             {/* Hero */}
-            <section className="hero-mesh noise-bg relative overflow-hidden">
+            <section className="hero-mesh relative overflow-hidden">
                 <div className="relative z-10 mx-auto max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8 lg:py-40">
                     <div className="mx-auto max-w-3xl text-center">
                         <p className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-accent">

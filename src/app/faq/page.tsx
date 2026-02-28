@@ -60,7 +60,7 @@ export default function FaqPage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="hero-mesh noise-bg relative overflow-hidden">
+      <section className="hero-mesh relative overflow-hidden">
         <div className="relative z-10 mx-auto max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8 lg:py-40">
           <div className="mx-auto max-w-3xl text-center">
             <p className="mb-4 text-sm font-semibold uppercase tracking-[0.2em] text-accent">
@@ -118,7 +118,7 @@ export default function FaqPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="hero-mesh noise-bg relative py-24 text-center">
+      <section className="bg-navy-900 relative py-24 text-center">
         <div className="relative z-10 mx-auto max-w-3xl px-4">
           <h2 className="font-display text-3xl text-white sm:text-4xl lg:text-5xl">
             Still Have Questions?
@@ -129,7 +129,7 @@ export default function FaqPage() {
           <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
             <a
               href="/contact"
-              className="inline-flex items-center gap-2 rounded-xl bg-accent px-10 py-4 text-lg font-bold text-white shadow-lg shadow-accent/20 transition hover:bg-accent-hover hover:scale-105"
+              className="inline-flex items-center gap-2 rounded-xl bg-accent px-10 py-4 text-lg font-bold text-navy-950 shadow-lg shadow-accent/20 transition hover:bg-accent-hover hover:scale-105"
             >
               Contact Us
             </a>

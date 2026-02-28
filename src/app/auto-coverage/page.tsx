@@ -71,7 +71,7 @@ export default function AutoCoveragePage() {
   return (
     <>
       {/* Hero */}
-      <section className="hero-mesh noise-bg relative overflow-hidden">
+      <section className="hero-mesh relative overflow-hidden">
         <div className="relative z-10 mx-auto max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
             <h1 className="font-display text-4xl leading-tight text-white sm:text-5xl lg:text-6xl">
@@ -81,23 +81,23 @@ export default function AutoCoveragePage() {
 
           {/* Two value-prop cards */}
           <div className="mx-auto mt-14 grid max-w-4xl gap-6 sm:grid-cols-2">
-            <div className="glass-card rounded-2xl p-6">
+            <div className="bg-white rounded-xl border border-navy-100 shadow-sm p-6">
               <div className="mb-3 inline-flex rounded-xl bg-accent-muted p-3">
                 <Shield className="h-6 w-6 text-accent" />
               </div>
-              <h3 className="text-lg font-bold text-white">Comprehensive Coverage</h3>
-              <p className="mt-2 text-sm leading-relaxed text-navy-100/80">
+              <h3 className="text-lg font-bold text-navy-900">Comprehensive Coverage</h3>
+              <p className="mt-2 text-sm leading-relaxed text-navy-600">
                 Our service contracts cover a wide range of repairs, ensuring your car stays in top
                 condition.
               </p>
             </div>
 
-            <div className="glass-card rounded-2xl p-6">
+            <div className="bg-white rounded-xl border border-navy-100 shadow-sm p-6">
               <div className="mb-3 inline-flex rounded-xl bg-accent-muted p-3">
                 <DollarSign className="h-6 w-6 text-accent" />
               </div>
-              <h3 className="text-lg font-bold text-white">Affordable Plans</h3>
-              <p className="mt-2 text-sm leading-relaxed text-navy-100/80">
+              <h3 className="text-lg font-bold text-navy-900">Affordable Plans</h3>
+              <p className="mt-2 text-sm leading-relaxed text-navy-600">
                 Choose from various plans that fit your budget without compromising on quality.
               </p>
             </div>
@@ -185,7 +185,7 @@ export default function AutoCoveragePage() {
       </section>
 
       {/* CTA */}
-      <section className="hero-mesh noise-bg relative py-24 text-center">
+      <section className="bg-navy-900 relative py-24 text-center">
         <div className="relative z-10 mx-auto max-w-3xl px-4">
           <h2 className="font-display text-3xl text-white sm:text-4xl lg:text-5xl">
             Secure Your Peace of Mind Today
@@ -197,7 +197,7 @@ export default function AutoCoveragePage() {
           </p>
           <Link
             href="/quote"
-            className="group mt-10 inline-flex items-center gap-2 rounded-xl bg-accent px-10 py-4 text-lg font-bold text-white shadow-lg shadow-accent/20 transition hover:bg-accent-hover hover:scale-105"
+            className="group mt-10 inline-flex items-center gap-2 rounded-xl bg-accent px-10 py-4 text-lg font-bold text-navy-950 shadow-lg shadow-accent/20 transition hover:bg-accent-hover hover:scale-105"
           >
             Get Your Free Quote
             <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />

@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 export default function Footer() {
   return (
-    <footer className="relative bg-navy-950 border-t border-navy-800 noise-bg">
+    <footer className="relative bg-navy-950 border-t border-navy-800">
       <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
         {/* Top section: Logo + Tagline + Accent Divider */}
         <div className="mb-12">
@@ -20,7 +20,7 @@ export default function Footer() {
             Protecting your investment with trusted Vehicle Service Contracts.
             Nationwide coverage backed by ASE Certified mechanics.
           </p>
-          <div className="mt-6 h-px w-24 bg-gradient-to-r from-accent to-accent-light" />
+          <div className="mt-6 h-px w-24 bg-navy-800" />
         </div>
 
         {/* 4-Column Link Grid */}
@@ -34,7 +34,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/about"
-                  className="text-sm text-navy-500 hover:text-navy-100 transition-colors"
+                  className="text-sm text-navy-500 hover:text-white transition-colors"
                 >
                   About eTags
                 </Link>
@@ -42,7 +42,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/about"
-                  className="text-sm text-navy-500 hover:text-navy-100 transition-colors"
+                  className="text-sm text-navy-500 hover:text-white transition-colors"
                 >
                   Our Mission &amp; Values
                 </Link>
@@ -50,7 +50,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/about"
-                  className="text-sm text-navy-500 hover:text-navy-100 transition-colors"
+                  className="text-sm text-navy-500 hover:text-white transition-colors"
                 >
                   Customer Testimonials
                 </Link>
@@ -67,7 +67,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/auto-coverage"
-                  className="text-sm text-navy-500 hover:text-navy-100 transition-colors"
+                  className="text-sm text-navy-500 hover:text-white transition-colors"
                 >
                   Auto Coverage
                 </Link>
@@ -75,7 +75,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/quote"
-                  className="text-sm text-navy-500 hover:text-navy-100 transition-colors"
+                  className="text-sm text-navy-500 hover:text-white transition-colors"
                 >
                   Get a Quote
                 </Link>
@@ -92,7 +92,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/terms"
-                  className="text-sm text-navy-500 hover:text-navy-100 transition-colors"
+                  className="text-sm text-navy-500 hover:text-white transition-colors"
                 >
                   Terms of Service
                 </Link>
@@ -100,7 +100,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="#"
-                  className="text-sm text-navy-500 hover:text-navy-100 transition-colors"
+                  className="text-sm text-navy-500 hover:text-white transition-colors"
                 >
                   Privacy Policy
                 </Link>
@@ -108,7 +108,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/cookies"
-                  className="text-sm text-navy-500 hover:text-navy-100 transition-colors"
+                  className="text-sm text-navy-500 hover:text-white transition-colors"
                 >
                   Cookie Policy
                 </Link>
@@ -116,7 +116,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="#"
-                  className="text-sm text-navy-500 hover:text-navy-100 transition-colors"
+                  className="text-sm text-navy-500 hover:text-white transition-colors"
                 >
                   Legal Notices
                 </Link>
@@ -133,7 +133,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/contact"
-                  className="text-sm text-navy-500 hover:text-navy-100 transition-colors"
+                  className="text-sm text-navy-500 hover:text-white transition-colors"
                 >
                   Contact Support
                 </Link>
@@ -141,7 +141,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/faq"
-                  className="text-sm text-navy-500 hover:text-navy-100 transition-colors"
+                  className="text-sm text-navy-500 hover:text-white transition-colors"
                 >
                   FAQ
                 </Link>

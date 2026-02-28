@@ -27,7 +27,7 @@ export default function ContactPage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="hero-mesh noise-bg relative overflow-hidden">
+      <section className="hero-mesh relative overflow-hidden">
         <div className="relative z-10 mx-auto max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8 lg:py-40">
           <div className="mx-auto max-w-3xl text-center">
             <h1 className="font-display text-4xl leading-tight text-white sm:text-5xl lg:text-6xl">
@@ -184,7 +184,7 @@ export default function ContactPage() {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-accent px-8 py-4 text-lg font-bold text-white shadow-lg shadow-accent/20 transition hover:bg-accent-hover hover:scale-105 sm:w-auto"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-accent px-8 py-4 text-lg font-bold text-navy-950 shadow-lg shadow-accent/20 transition hover:bg-accent-hover hover:scale-105 sm:w-auto"
                 >
                   <Send className="h-5 w-5" />
                   Submit
@@ -196,7 +196,7 @@ export default function ContactPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="hero-mesh noise-bg relative py-24 text-center">
+      <section className="bg-navy-900 relative py-24 text-center">
         <div className="relative z-10 mx-auto max-w-3xl px-4">
           <h2 className="font-display text-3xl text-white sm:text-4xl lg:text-5xl">
             Need Assistance? Contact Us Today!
@@ -207,7 +207,7 @@ export default function ContactPage() {
           </p>
           <Link
             href="/quote"
-            className="group mt-10 inline-flex items-center gap-2 rounded-xl bg-accent px-10 py-4 text-lg font-bold text-white shadow-lg shadow-accent/20 transition hover:bg-accent-hover hover:scale-105"
+            className="group mt-10 inline-flex items-center gap-2 rounded-xl bg-accent px-10 py-4 text-lg font-bold text-navy-950 shadow-lg shadow-accent/20 transition hover:bg-accent-hover hover:scale-105"
           >
             Get a Quote
             <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />

@@ -59,7 +59,7 @@ export default function PlanCard({
       {/* Best Value Badge - only on Premium (recommended tier) */}
       {showBestValueBadge && (
         <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
-          <span className="inline-flex items-center gap-1 rounded-full bg-accent px-4 py-1 text-xs font-bold uppercase tracking-wide text-white shadow-md">
+          <span className="inline-flex items-center gap-1 rounded-full bg-accent px-4 py-1 text-xs font-bold uppercase tracking-wide text-navy-950 shadow-md">
             Best Value
           </span>
         </div>
@@ -119,7 +119,7 @@ export default function PlanCard({
           }}
           className={`w-full rounded-lg px-4 py-3 text-sm font-semibold transition hover:scale-[1.02] active:scale-100 ${
             isRecommended
-              ? 'bg-accent text-white shadow-lg shadow-accent/20 hover:bg-accent-hover'
+              ? 'bg-accent text-navy-950 shadow-lg shadow-accent/20 hover:bg-accent-hover'
               : 'bg-navy-800 text-white hover:bg-navy-700'
           }`}
         >

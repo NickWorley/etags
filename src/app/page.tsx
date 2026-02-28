@@ -30,7 +30,7 @@ export default function HomePage() {
           </p>
           <Link
             href="/quote"
-            className="mt-10 inline-block rounded-xl bg-accent px-10 py-4 text-lg font-bold text-white shadow-lg shadow-accent/20 transition hover:bg-accent-hover hover:scale-105"
+            className="mt-10 inline-block rounded-xl bg-accent px-10 py-4 text-lg font-bold text-navy-950 shadow-lg shadow-accent/20 transition hover:bg-accent-hover hover:scale-105"
           >
             Secure Your Coverage
           </Link>
@@ -42,7 +42,7 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {/* Customizable Plans */}
-            <div className="card-lift rounded-2xl bg-white p-6 shadow-md">
+            <div className="card-lift rounded-2xl bg-white p-6 shadow-sm">
               <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-accent-muted">
                 <Shield className="h-6 w-6 text-accent" />
               </div>
@@ -54,7 +54,7 @@ export default function HomePage() {
             </div>
 
             {/* Quick Online Enrollment */}
-            <div className="card-lift rounded-2xl bg-white p-6 shadow-md">
+            <div className="card-lift rounded-2xl bg-white p-6 shadow-sm">
               <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-accent-muted">
                 <Zap className="h-6 w-6 text-accent" />
               </div>
@@ -66,7 +66,7 @@ export default function HomePage() {
             </div>
 
             {/* Auto Coverage */}
-            <div className="card-lift rounded-2xl bg-white p-6 shadow-md">
+            <div className="card-lift rounded-2xl bg-white p-6 shadow-sm">
               <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-accent-muted">
                 <Car className="h-6 w-6 text-accent" />
               </div>
@@ -78,7 +78,7 @@ export default function HomePage() {
             </div>
 
             {/* Nationwide Network */}
-            <div className="card-lift rounded-2xl bg-white p-6 shadow-md">
+            <div className="card-lift rounded-2xl bg-white p-6 shadow-sm">
               <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-accent-muted">
                 <MapPin className="h-6 w-6 text-accent" />
               </div>
@@ -96,7 +96,7 @@ export default function HomePage() {
       <HowItWorks />
 
       {/* Final CTA */}
-      <section className="hero-mesh noise-bg relative py-24 text-center">
+      <section className="bg-navy-900 relative py-24 text-center">
         <div className="relative z-10 mx-auto max-w-3xl px-4">
           <h2 className="font-display text-3xl text-white sm:text-4xl lg:text-5xl">
             Ready to protect your investment?
@@ -106,7 +106,7 @@ export default function HomePage() {
           </p>
           <Link
             href="/quote"
-            className="mt-10 inline-block rounded-xl bg-accent px-10 py-4 text-lg font-bold text-white shadow-lg shadow-accent/20 transition hover:bg-accent-hover hover:scale-105"
+            className="mt-10 inline-block rounded-xl bg-accent px-10 py-4 text-lg font-bold text-navy-950 shadow-lg shadow-accent/20 transition hover:bg-accent-hover hover:scale-105"
           >
             Start Your Quote
           </Link>

@@ -37,7 +37,7 @@ export default function QuoteEntryForm() {
   return (
     <section className="relative -mt-8 z-20 pb-16">
       <div className="mx-auto max-w-2xl px-4 sm:px-6">
-        <div className="rounded-2xl bg-white p-8 shadow-2xl shadow-navy-900/8 ring-1 ring-navy-100 sm:p-10">
+        <div className="rounded-2xl bg-white p-8 shadow-lg shadow-navy-900/8 sm:p-10">
           <h2 className="text-center font-display text-2xl text-navy-900 sm:text-3xl">
             Get Your Quote in Seconds
           </h2>
@@ -63,7 +63,7 @@ export default function QuoteEntryForm() {
                 placeholder="e.g. 1HGCG5655WA014677"
                 value={vin}
                 onChange={(e) => setVin(e.target.value.toUpperCase())}
-                className="mt-2 block w-full rounded-xl border border-navy-100 bg-navy-50/50 px-4 py-3 font-mono text-sm tracking-wider placeholder-navy-400 transition focus:border-accent focus:bg-white focus:ring-2 focus:ring-accent/20 focus:outline-none"
+                className="mt-2 block w-full rounded-lg border border-navy-100 bg-navy-50/50 px-4 py-3 font-mono text-sm tracking-wider placeholder-navy-400 transition focus:border-accent focus:bg-white focus:ring-2 focus:ring-accent/20 focus:outline-none"
                 required
               />
               <p className="mt-1.5 text-xs text-navy-500">
@@ -84,7 +84,7 @@ export default function QuoteEntryForm() {
                 placeholder="e.g. 45000"
                 value={mileage}
                 onChange={(e) => setMileage(e.target.value)}
-                className="mt-2 block w-full rounded-xl border border-navy-100 bg-navy-50/50 px-4 py-3 text-sm placeholder-navy-400 transition focus:border-accent focus:bg-white focus:ring-2 focus:ring-accent/20 focus:outline-none"
+                className="mt-2 block w-full rounded-lg border border-navy-100 bg-navy-50/50 px-4 py-3 text-sm placeholder-navy-400 transition focus:border-accent focus:bg-white focus:ring-2 focus:ring-accent/20 focus:outline-none"
                 required
               />
             </div>
@@ -100,7 +100,7 @@ export default function QuoteEntryForm() {
             {/* Submit */}
             <button
               type="submit"
-              className="group flex w-full items-center justify-center gap-2 rounded-xl bg-accent px-6 py-3.5 text-base font-bold text-white shadow-lg shadow-accent/20 transition hover:bg-accent-hover hover:scale-[1.02] active:scale-100"
+              className="group flex w-full items-center justify-center gap-2 rounded-xl bg-accent px-6 py-3.5 text-base font-bold text-navy-950 shadow-lg shadow-accent/20 transition hover:bg-accent-hover hover:scale-[1.02] active:scale-100"
             >
               Get Your Free Quote
               <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />

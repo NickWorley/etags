@@ -33,7 +33,7 @@ export default function TrustSignals() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Section header */}
         <div className="text-center">
-          <h2 className="accent-line font-display text-3xl tracking-tight text-navy-900 sm:text-4xl">
+          <h2 className="font-display text-3xl tracking-tight text-navy-900 sm:text-4xl">
             Protect your investment.
           </h2>
           <p className="mt-4 text-lg text-navy-600">
@@ -46,9 +46,9 @@ export default function TrustSignals() {
           {signals.map((signal) => (
             <div
               key={signal.title}
-              className="card-lift rounded-2xl border border-navy-100 bg-navy-50/60 p-7"
+              className="card-lift bg-white rounded-lg border border-navy-100 shadow-sm p-6"
             >
-              <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-accent-muted">
+              <div className="mb-5 h-12 w-12 rounded-lg bg-accent-muted flex items-center justify-center">
                 <signal.icon className="h-6 w-6 text-accent" />
               </div>
               <h3 className="font-semibold text-navy-900">{signal.title}</h3>
