@@ -1,19 +1,13 @@
 import type { Metadata } from 'next';
-import { Open_Sans, Playfair_Display } from 'next/font/google';
+import { Roboto } from 'next/font/google';
 import './globals.css';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 
-const openSans = Open_Sans({
-  variable: '--font-open-sans',
+const roboto = Roboto({
+  variable: '--font-roboto',
   subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
-});
-
-const playfairDisplay = Playfair_Display({
-  variable: '--font-playfair-display',
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700', '800', '900'],
+  weight: ['300', '400', '500', '700'],
 });
 
 export const metadata: Metadata = {
@@ -29,7 +23,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${openSans.variable} ${playfairDisplay.variable}`}>
+    <html lang="en" className={roboto.variable}>
       <body className="min-h-screen bg-background font-sans antialiased">
         <Header />
         <main>{children}</main>

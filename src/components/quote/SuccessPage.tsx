@@ -70,7 +70,7 @@ export default function SuccessPage() {
       <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
         <button
           onClick={handleReturnHome}
-          className="flex items-center justify-center gap-2 rounded-lg bg-accent px-6 py-3 text-sm font-semibold text-navy-950 shadow-lg shadow-accent/20 transition hover:bg-accent-hover"
+          className="flex items-center justify-center gap-2 rounded-lg bg-accent px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-accent/20 transition hover:bg-accent-hover"
         >
           <Home className="h-4 w-4" />
           Return Home

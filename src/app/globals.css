@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: #FFFFFF;
-  --color-foreground: #0F1F3D;
-  --color-navy-950: #0A1628;
+  --color-background: #f8f8f9;
+  --color-foreground: #01132c;
+  --color-navy-950: #01132c;
   --color-navy-900: #0F1F3D;
   --color-navy-800: #1B365D;
   --color-navy-700: #2A4A7F;
@@ -11,20 +11,23 @@
   --color-navy-500: #5A7EB5;
   --color-navy-100: #C8D6E5;
   --color-navy-50: #EDF2F7;
-  --color-accent: #F5A623;
-  --color-accent-hover: #D48E1B;
-  --color-accent-light: #FFBF4A;
-  --color-accent-muted: rgba(245, 166, 35, 0.12);
-  --color-action: #F5A623;
-  --color-action-hover: #D48E1B;
-  --color-action-light: #FFBF4A;
-  --color-success: #10b981;
-  --color-success-light: #34d399;
+  --color-accent: #00ae47;
+  --color-accent-hover: #009a3e;
+  --color-accent-light: #44b743;
+  --color-accent-muted: rgba(0, 174, 71, 0.12);
+  --color-action: #00ae47;
+  --color-action-hover: #009a3e;
+  --color-action-light: #44b743;
+  --color-primary: #3094e8;
+  --color-primary-hover: #2680cc;
+  --color-success: #44b743;
+  --color-success-light: #6cc96b;
+  --color-warning: #fac142;
   --color-glass: rgba(255, 255, 255, 0.06);
   --color-glass-border: rgba(255, 255, 255, 0.1);
   --color-glass-strong: rgba(255, 255, 255, 0.12);
-  --font-sans: var(--font-open-sans);
-  --font-display: var(--font-playfair-display);
+  --font-sans: var(--font-roboto);
+  --font-display: var(--font-roboto);
 }
 
 body {

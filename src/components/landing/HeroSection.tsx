@@ -28,7 +28,7 @@ export default function HeroSection() {
           <div className="animate-fade-up stagger-4 mt-10 flex flex-col gap-4 sm:flex-row">
             <Link
               href="/quote"
-              className="group inline-flex items-center justify-center gap-2 rounded-xl bg-accent px-8 py-4 text-lg font-bold text-navy-950 shadow-lg shadow-accent/20 transition hover:bg-accent-hover hover:scale-105"
+              className="group inline-flex items-center justify-center gap-2 rounded-xl bg-accent px-8 py-4 text-lg font-bold text-white shadow-lg shadow-accent/20 transition hover:bg-accent-hover hover:scale-105"
             >
               Get Your Free Quote
               <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />

@@ -129,7 +129,7 @@ export default function FaqPage() {
           <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
             <a
               href="/contact"
-              className="inline-flex items-center gap-2 rounded-xl bg-accent px-10 py-4 text-lg font-bold text-navy-950 shadow-lg shadow-accent/20 transition hover:bg-accent-hover hover:scale-105"
+              className="inline-flex items-center gap-2 rounded-xl bg-accent px-10 py-4 text-lg font-bold text-white shadow-lg shadow-accent/20 transition hover:bg-accent-hover hover:scale-105"
             >
               Contact Us
             </a>

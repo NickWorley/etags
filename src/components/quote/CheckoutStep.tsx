@@ -689,7 +689,7 @@ export default function CheckoutStep() {
         id="payButton"
         onClick={handlePayClick}
         disabled={loading}
-        className="w-full rounded-lg bg-accent px-6 py-4 text-lg font-bold text-navy-950 shadow-lg shadow-accent/20 transition hover:bg-accent-hover hover:scale-[1.01] active:scale-100 disabled:opacity-60 disabled:cursor-not-allowed"
+        className="w-full rounded-lg bg-accent px-6 py-4 text-lg font-bold text-white shadow-lg shadow-accent/20 transition hover:bg-accent-hover hover:scale-[1.01] active:scale-100 disabled:opacity-60 disabled:cursor-not-allowed"
       >
         {loading ? (
           <span className="flex items-center justify-center gap-2">
