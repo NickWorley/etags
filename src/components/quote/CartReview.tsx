@@ -6,7 +6,7 @@ import { ShoppingCart } from 'lucide-react';
 import VehicleCoverageSummary from './VehicleCoverageSummary';
 
 export default function CartReview() {
-  const { vehicles, getMasterPrice, setStep, setVehiclePreview } = useQuoteStore();
+  const { vehicles, getMasterPrice, setStep, setVehiclePreview, addVehicleSlot } = useQuoteStore();
 
   const masterTotal = getMasterPrice();
 
@@ -126,7 +126,7 @@ export default function CartReview() {
       <div className="flex flex-col gap-3 sm:flex-row">
         {coveredVehicles.length < 2 && (
           <button
-            onClick={() => setStep('bundle-prompt')}
+            onClick={() => { addVehicleSlot(); setStep('vehicle-info'); }}
             className="flex-1 rounded-lg border border-navy-100 bg-white px-6 py-3 text-sm font-semibold text-navy-700 transition hover:bg-navy-50"
           >
             Add More Coverage

@@ -4,7 +4,6 @@ import { useQuoteStore } from '@/store/quote-store';
 import type { WizardStep } from '@/lib/types';
 import VehicleInfoStep from './VehicleInfoStep';
 import PlanSelectionStep from './PlanSelectionStep';
-import BundlePrompt from './BundlePrompt';
 import CartReview from './CartReview';
 import CheckoutStep from './CheckoutStep';
 import SuccessPage from './SuccessPage';
@@ -99,7 +98,6 @@ export default function QuoteWizard({ initialVin, initialMileage }: QuoteWizardP
         <VehicleInfoStep initialVin={initialVin} initialMileage={initialMileage} />
       )}
       {currentStep === 'plan-selection' && <PlanSelectionStep />}
-      {currentStep === 'bundle-prompt' && <BundlePrompt />}
       {currentStep === 'cart-review' && <CartReview />}
       {currentStep === 'checkout' && <CheckoutStep />}
       {currentStep === 'success' && <SuccessPage />}

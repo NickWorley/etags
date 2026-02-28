@@ -186,7 +186,7 @@ export default function PlanSelectionStep() {
       costs
     );
 
-    setStep('bundle-prompt');
+    setStep('cart-review');
   }
 
   // Determine the "recommended" tier (Premium if available, else highest)

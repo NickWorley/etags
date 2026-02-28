@@ -133,7 +133,7 @@ export default function VehicleInfoStep({ initialVin, initialMileage }: VehicleI
       <div className="rounded-2xl bg-white p-6 shadow-md sm:p-8">
         {currentVehicleIndex > 0 && (
           <button
-            onClick={() => setStep('bundle-prompt')}
+            onClick={() => setStep('cart-review')}
             className="flex items-center gap-2 text-sm font-medium text-navy-600 hover:text-accent transition"
           >
             <ArrowLeft className="h-4 w-4" />
