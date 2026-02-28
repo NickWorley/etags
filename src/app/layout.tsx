@@ -17,10 +17,10 @@ const dmSerif = DM_Serif_Display({
 });
 
 export const metadata: Metadata = {
-  title: 'Click for Coverage | Vehicle Service Contracts',
+  title: 'eTags | Vehicle Service Contracts',
   description:
-    'Protect your investment with trusted Vehicle Service Contracts. Get a quote in seconds. Nationwide coverage, ASE Certified mechanics, $0 deductible options available.',
-  keywords: 'vehicle service contract, auto coverage, mechanical breakdown coverage, protection plan',
+    'Protect your investment with trusted Vehicle Service Contracts from eTags. Get a quote in seconds. Nationwide coverage, ASE Certified mechanics, $0 deductible options available.',
+  keywords: 'vehicle service contract, auto coverage, mechanical breakdown coverage, protection plan, etags',
 };
 
 export default function RootLayout({
