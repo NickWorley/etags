@@ -11,9 +11,9 @@ export default function Footer() {
             <Image
               src="/images/etags-logo.png"
               alt="eTags"
-              width={160}
+              width={48}
               height={48}
-              className="h-9 w-auto"
+              className="h-12 w-12 rounded-lg"
             />
           </Link>
           <p className="mt-4 max-w-md text-sm leading-relaxed text-navy-500">

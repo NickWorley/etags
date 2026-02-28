@@ -30,9 +30,9 @@ export default function Header() {
             <Image
               src="/images/etags-logo.png"
               alt="eTags"
-              width={200}
-              height={60}
-              className="h-22 w-auto"
+              width={48}
+              height={48}
+              className="h-12 w-12 rounded-lg"
             />
           </Link>
 

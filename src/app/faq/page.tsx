@@ -7,7 +7,7 @@ const faqItems = [
   {
     question: 'What types of coverage does eTags offer?',
     answer:
-      'We offer four tiers of auto coverage, as well as three levels of home coverage, each designed to cater to different needs and budgets. Whether you\'re looking for basic coverage or comprehensive protection, we have a plan for you.',
+      'We offer four tiers of Vehicle Service Contracts, each designed to cater to different needs and budgets. Whether you\'re looking for basic powertrain coverage or comprehensive bumper-to-bumper protection, we have a plan for you.',
   },
   {
     question: 'What is auto coverage and why do I need it?',
@@ -15,9 +15,9 @@ const faqItems = [
       'Auto coverage is a service agreement that covers specific repairs and services for your vehicle. It provides financial protection against unexpected repair costs, ensuring your vehicle remains in optimal condition.',
   },
   {
-    question: 'Can I transfer my coverage if I sell my home or vehicle?',
+    question: 'Can I transfer my coverage if I sell my vehicle?',
     answer:
-      'Yes, most of our coverages are transferable. This can increase the resale value of your vehicle or home, providing added benefit to both you and the buyer.',
+      'Yes, most of our Vehicle Service Contracts are transferable. This can increase the resale value of your vehicle, providing added benefit to both you and the buyer.',
   },
   {
     question: 'How does the purchasing process work at eTags?',
@@ -25,9 +25,9 @@ const faqItems = [
       'Our purchasing process is simple and straightforward. Browse our coverage plans, choose the one that suits your needs, and complete the purchase online.',
   },
   {
-    question: 'What is home coverage and why do I need it?',
+    question: 'What is a Vehicle Service Contract?',
     answer:
-      'Home coverage is a service agreement that covers specific repairs and services for your home. It provides financial protection against unexpected repair costs, ensuring your home remains in optimal condition.',
+      'A Vehicle Service Contract is a service agreement that covers specific repairs and maintenance for your vehicle beyond the factory warranty. It provides financial protection against unexpected repair costs, keeping your vehicle running smoothly.',
   },
   {
     question: 'How do I file a claim with eTags?',
@@ -35,7 +35,7 @@ const faqItems = [
       'Filing a claim is easy. Simply navigate to our claims portal, or call the claims number on your fulfillment packet, provide the necessary details, and we\'ll guide you through the process to ensure a smooth experience.',
   },
   {
-    question: 'Are there any additional benefits with a eTags coverage?',
+    question: 'Are there any additional benefits with an eTags coverage?',
     answer: 'Yes, our coverages often include additional optional selections.',
   },
   {
