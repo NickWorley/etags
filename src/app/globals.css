@@ -1,30 +1,30 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: #f7f8fa;
-  --color-foreground: #0a0f1e;
-  --color-navy-950: #060b18;
-  --color-navy-900: #0a0f1e;
-  --color-navy-800: #131a2e;
-  --color-navy-700: #1e2a45;
-  --color-navy-600: #2d3f5e;
-  --color-navy-500: #3d5278;
-  --color-navy-100: #e8ecf4;
-  --color-navy-50: #f3f5f9;
-  --color-accent: #d4a853;
-  --color-accent-hover: #c49742;
-  --color-accent-light: #e4c67a;
-  --color-accent-muted: rgba(212, 168, 83, 0.12);
-  --color-action: #2563eb;
-  --color-action-hover: #1d4ed8;
-  --color-action-light: #3b82f6;
+  --color-background: #f8f8f9;
+  --color-foreground: #01132c;
+  --color-navy-950: #01132c;
+  --color-navy-900: #0a1f3d;
+  --color-navy-800: #133b5d;
+  --color-navy-700: #1c567e;
+  --color-navy-600: #25729e;
+  --color-navy-500: #3094e8;
+  --color-navy-100: #d6eafa;
+  --color-navy-50: #eef5fc;
+  --color-accent: #3094e8;
+  --color-accent-hover: #2676ba;
+  --color-accent-light: #7bb5e6;
+  --color-accent-muted: rgba(48, 148, 232, 0.12);
+  --color-action: #00ae47;
+  --color-action-hover: #009a3e;
+  --color-action-light: #44b743;
   --color-success: #10b981;
   --color-success-light: #34d399;
   --color-glass: rgba(255, 255, 255, 0.06);
   --color-glass-border: rgba(255, 255, 255, 0.1);
   --color-glass-strong: rgba(255, 255, 255, 0.12);
-  --font-sans: var(--font-dm-sans);
-  --font-display: var(--font-dm-serif);
+  --font-sans: var(--font-roboto);
+  --font-display: var(--font-roboto-slab);
 }
 
 body {
@@ -41,7 +41,7 @@ html {
 
 ::selection {
   background-color: var(--color-accent);
-  color: #0a0f1e;
+  color: #ffffff;
 }
 
 /* ─── Noise texture overlay ─── */
@@ -68,10 +68,10 @@ html {
 /* ─── Gradient mesh for hero sections ─── */
 .hero-mesh {
   background:
-    radial-gradient(ellipse 80% 50% at 20% 40%, rgba(212, 168, 83, 0.08) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 60% at 80% 20%, rgba(37, 99, 235, 0.06) 0%, transparent 50%),
-    radial-gradient(ellipse 40% 80% at 60% 90%, rgba(16, 185, 129, 0.04) 0%, transparent 50%),
-    linear-gradient(165deg, #060b18 0%, #0a0f1e 30%, #131a2e 70%, #1e2a45 100%);
+    radial-gradient(ellipse 80% 50% at 20% 40%, rgba(48, 148, 232, 0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 60% at 80% 20%, rgba(0, 174, 71, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse 40% 80% at 60% 90%, rgba(48, 148, 232, 0.06) 0%, transparent 50%),
+    linear-gradient(165deg, #01132c 0%, #0a1f3d 30%, #133b5d 70%, #1c567e 100%);
 }
 
 /* ─── Stagger animation ─── */
@@ -105,7 +105,7 @@ html {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(212, 168, 83, 0.15), transparent);
+  background: linear-gradient(90deg, transparent, rgba(48, 148, 232, 0.15), transparent);
   animation: shimmer 3s ease-in-out infinite;
 }
 
@@ -139,12 +139,12 @@ html {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #0a0f1e;
+  background: #01132c;
 }
 ::-webkit-scrollbar-thumb {
-  background: #2d3f5e;
+  background: #25729e;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3d5278;
+  background: #3094e8;
 }
