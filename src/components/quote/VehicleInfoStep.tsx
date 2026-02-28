@@ -7,10 +7,9 @@ import { AlertCircle, Car, ArrowLeft } from 'lucide-react';
 interface VehicleInfoStepProps {
   initialVin?: string;
   initialMileage?: number;
-  startedWithHome?: boolean;
 }
 
-export default function VehicleInfoStep({ initialVin, initialMileage, startedWithHome = false }: VehicleInfoStepProps) {
+export default function VehicleInfoStep({ initialVin, initialMileage }: VehicleInfoStepProps) {
   const { currentVehicleIndex, setVehicleInfo, setAvailableRates, setStep } = useQuoteStore();
 
   const currentYear = new Date().getFullYear();
@@ -132,7 +131,7 @@ export default function VehicleInfoStep({ initialVin, initialMileage, startedWit
   return (
     <div className="mx-auto max-w-xl">
       <div className="rounded-2xl bg-white p-6 shadow-md sm:p-8">
-        {(currentVehicleIndex > 0 || startedWithHome) && (
+        {currentVehicleIndex > 0 && (
           <button
             onClick={() => setStep('bundle-prompt')}
             className="flex items-center gap-2 text-sm font-medium text-navy-600 hover:text-accent transition"
