@@ -7,7 +7,6 @@ import { US_STATES, formatCurrency } from '@/lib/constants';
 import { AlertCircle, Lock, CreditCard } from 'lucide-react';
 import Link from 'next/link';
 import VehicleCoverageSummary from './VehicleCoverageSummary';
-import HomeCoverageSummary from './HomeCoverageSummary';
 
 declare global {
   interface Window {
@@ -21,7 +20,6 @@ declare global {
 export default function CheckoutStep() {
   const {
     vehicles,
-    homeCoverage,
     customer,
     setCustomer,
     paymentType,
@@ -50,13 +48,10 @@ export default function CheckoutStep() {
   const masterPrice = getMasterPrice();
   const configuredRef = useRef(false);
 
-  // Bundle discount: 10% for 2+ vehicles (car bundle), 10% for home (home bundle); max 20%
+  // Bundle discount: 10% for 2+ vehicles
   const coveredVehicles = vehicles.filter((v) => v.vehicle && v.coverage);
   const BUNDLE_DISCOUNT_PERCENT = 10;
-  const bundleDiscount = ((homeCoverage && coveredVehicles.length >=1) || (coveredVehicles.length >= 2)) ? BUNDLE_DISCOUNT_PERCENT : 0;
-  //const carBundleDiscount = coveredVehicles.length >= 2 ? BUNDLE_DISCOUNT_PERCENT : 0;
-  //const homeBundleDiscount = (homeCoverage && coveredVehicles.length >= 1) ? BUNDLE_DISCOUNT_PERCENT : 0;
-  //const totalDiscountPercent = carBundleDiscount + homeBundleDiscount;
+  const bundleDiscount = coveredVehicles.length >= 2 ? BUNDLE_DISCOUNT_PERCENT : 0;
   const totalDiscountPercent = bundleDiscount;
   const discountAmount = masterPrice * (totalDiscountPercent / 100);
   const discountedTotal = masterPrice - discountAmount;
@@ -69,7 +64,7 @@ export default function CheckoutStep() {
     if (!v.previewBuckets) return total;
     return total + v.previewBuckets.filter((b) => targetCodes.includes(b.code)).reduce((sum, b) => sum + b.amount, 0);
   }, 0);
-  const buydownInitialAmount = reserveVehicleSums + (Number(homeCoverage?.priceBreakdown.reserve) || 0);
+  const buydownInitialAmount = reserveVehicleSums;
   const totalDue = hasBundleDiscount ? discountedTotal : masterPrice;
   const buydownRemaining = Math.max(0, totalDue - buydownInitialAmount);
   const buydownMonthly = BUYDOWN_TERM_MONTHS > 0 ? buydownRemaining / BUYDOWN_TERM_MONTHS : 0;
@@ -155,10 +150,8 @@ export default function CheckoutStep() {
         
 
         let autoSuccess = true;
-        let homeSuccess = true;
-        
+
         let autoContractResults: any[] = [];
-        let homeContractResult: any = null;
 
         // Create auto contracts
         const coveredVehicles = vehicles.filter((v) => v.vehicle && v.coverage);
@@ -180,7 +173,6 @@ export default function CheckoutStep() {
                 },
               ],
 
-              // coverages: [v.coverage],
               dealerNumber: process.env.NEXT_PUBLIC_DEALER_NUMBER_AUTO ?? '',
               saleDate: today,
               saleOdometer: v.saleOdometer,
@@ -215,42 +207,7 @@ export default function CheckoutStep() {
           }
         }
 
-        // Create home contract
-        if (homeCoverage) {
-          const addOnCodes = homeCoverage.addOns.map((a) => a.code);
-          const homeRes = await fetch('/api/contract/home', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              homeDetails: {
-                homeCoverageCode: homeCoverage.coverageCode,
-                lossCodes: addOnCodes,
-              },
-              customer: {
-                firstName: customerData.firstName,
-                lastName: customerData.lastName,
-                phone: customerData.phone,
-                email: customerData.email,
-                address: customerData.address,
-              },
-            }),
-          });
-
-          const homeData = await homeRes.json();
-          homeContractResult = homeData;
-
-          if (homeData.error) {
-              homeSuccess = false;
-              setError(
-                homeData.error || 
-                'Home contract failed to create. Please verify your information and try again.'
-            );
-          }
-          
-          
-        }
-
-        if (!autoSuccess || !homeSuccess) {
+        if (!autoSuccess) {
           try {
             const cancelConRes = await fetch('/api/payment/cancel', {
               method: 'POST',
@@ -269,10 +226,6 @@ export default function CheckoutStep() {
           return;
         }
 
-        // console.log("Here is the vehicle response:", autoContractResults);
-        // console.log("Here is the home contract response:", homeContractResult);
-        // console.log("Here is the payment response:", paymentData);
-
         const captureRes = await fetch('/api/payment/capture', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -282,7 +235,6 @@ export default function CheckoutStep() {
             paymentType,
             subscriptionid: paymentData?.subscriptionid,
             autoDetails: autoContractResults,
-            homeDetails: homeContractResult
           }),
         });
 
@@ -329,7 +281,7 @@ export default function CheckoutStep() {
       }
     },
     [
-      masterPrice, vehicles, homeCoverage, setCustomer, setStep,
+      masterPrice, vehicles, setCustomer, setStep,
     ]
   );
 
@@ -457,7 +409,7 @@ export default function CheckoutStep() {
         return total + vehicleTotal;
       }, 0);
 
-      const totalReserveSum = reserveVehicleSums + (Number(homeCoverage?.priceBreakdown.reserve) || 0);
+      const totalReserveSum = reserveVehicleSums;
       setPaymentType('buydown');
       setInitPayment(totalReserveSum);
     }
@@ -489,7 +441,6 @@ export default function CheckoutStep() {
             costs={v.costs!}
           />
         ))}
-        {homeCoverage && <HomeCoverageSummary homeCoverage={homeCoverage} />}
       </div>
 
       {/* Payment Type Toggle */}
