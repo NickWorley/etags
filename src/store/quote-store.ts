@@ -7,7 +7,6 @@ import type {
   SelectedCoverage,
   CostBreakdown,
   PreviewBucket,
-  HomeCoverage,
   Customer,
   CoverageRate,
 } from '@/lib/types';
@@ -37,10 +36,6 @@ interface QuoteState {
   // Available rates (from API)
   availableRates: CoverageRate[];
   setAvailableRates: (rates: CoverageRate[]) => void;
-
-  // Home coverage (max 1)
-  homeCoverage: HomeCoverage | null;
-  setHomeCoverage: (home: HomeCoverage) => void;
 
   // Customer
   customer: Customer | null;
@@ -104,9 +99,6 @@ export const useQuoteStore = create<QuoteState>((set, get) => ({
   availableRates: [],
   setAvailableRates: (rates) => set({ availableRates: rates }),
 
-  homeCoverage: null,
-  setHomeCoverage: (home) => set({ homeCoverage: home }),
-
   customer: null,
   setCustomer: (customer) => set({ customer }),
 
@@ -119,7 +111,6 @@ export const useQuoteStore = create<QuoteState>((set, get) => ({
     for (const v of state.vehicles) {
       if (v.costs) total += v.costs.totalPrice;
     }
-    if (state.homeCoverage) total += state.homeCoverage.totalFinalPrice;
     return total;
   },
 
@@ -132,7 +123,6 @@ export const useQuoteStore = create<QuoteState>((set, get) => ({
       vehicles: [emptyVehicle()],
       currentVehicleIndex: 0,
       availableRates: [],
-      homeCoverage: null,
       customer: null,
       paymentType: 'full',
       amountPaidAtCheckout: null,
