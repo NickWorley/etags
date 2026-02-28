@@ -1,12 +1,10 @@
 'use client';
 
-import { useEffect, useRef, useMemo } from 'react';
 import { useQuoteStore } from '@/store/quote-store';
 import type { WizardStep } from '@/lib/types';
 import VehicleInfoStep from './VehicleInfoStep';
 import PlanSelectionStep from './PlanSelectionStep';
 import BundlePrompt from './BundlePrompt';
-import HomeSelectionStep from './HomeSelectionStep';
 import CartReview from './CartReview';
 import CheckoutStep from './CheckoutStep';
 import SuccessPage from './SuccessPage';
@@ -14,48 +12,20 @@ import SuccessPage from './SuccessPage';
 interface QuoteWizardProps {
   initialVin?: string;
   initialMileage?: number;
-  /** When 'home', start at home coverage selection (standalone home flow). */
-  initialProduct: 'home' | 'auto';
 }
 
-const AUTO_STEPS: { key: WizardStep; label: string }[] = [
+const STEPS: { key: WizardStep; label: string }[] = [
   { key: 'vehicle-info', label: 'Vehicle Info' },
   { key: 'plan-selection', label: 'Select Plan' },
   { key: 'cart-review', label: 'Review' },
   { key: 'checkout', label: 'Checkout' },
 ];
 
-const HOME_STEPS: { key: WizardStep; label: string }[] = [
-  { key: 'home-selection', label: 'Home Info' },
-  { key: 'cart-review', label: 'Review' },
-  { key: 'checkout', label: 'Checkout' },
-];
-
-function getProgressIndex(step: WizardStep, isHomeFlow: boolean): number {
-
-  if (isHomeFlow) {
-    switch (step) {
-      case 'home-selection':
-        return 0;
-      case 'cart-review':
-        return 1;
-      //case 'bundle-prompt':
-      case 'checkout':
-        return 2;
-      case 'success':
-        return 3;
-      default:
-        return 0;
-    }
-  }
-
+function getProgressIndex(step: WizardStep): number {
   switch (step) {
     case 'vehicle-info':
       return 0;
     case 'plan-selection':
-      return 1;
-    case 'bundle-prompt':
-    case 'home-selection':
       return 1;
     case 'cart-review':
       return 2;
@@ -66,42 +36,12 @@ function getProgressIndex(step: WizardStep, isHomeFlow: boolean): number {
     default:
       return 0;
   }
-  // switch (step) {
-  //   case 'vehicle-info':
-  //     return 0;
-  //   case 'plan-selection':
-  //     return 1;
-  //   case 'bundle-prompt':
-  //   case 'home-selection':
-  //     return 1;
-  //   case 'cart-review':
-  //     return 2;
-  //   case 'checkout':
-  //     return 3;
-  //   case 'success':
-  //     return 4;
-  //   default:
-  //     return 0;
-  // }
 }
 
-export default function QuoteWizard({ initialVin, initialMileage, initialProduct }: QuoteWizardProps) {
+export default function QuoteWizard({ initialVin, initialMileage }: QuoteWizardProps) {
   const currentStep = useQuoteStore((s) => s.currentStep);
-  const setStep = useQuoteStore((s) => s.setStep);
 
-  const isHomeFlow = initialProduct === 'home';
-  const STEPS = useMemo(() => isHomeFlow ? HOME_STEPS : AUTO_STEPS, [isHomeFlow]);
-
-  const progressIndex = getProgressIndex(currentStep, isHomeFlow);
-
-  // Standalone home flow: start at home-selection only on initial load (so "Add Another Vehicle" can later go to vehicle-info)
-  const hasRedirectedToHome = useRef(false);
-  useEffect(() => {
-    if (initialProduct === 'home' && !hasRedirectedToHome.current) {
-      hasRedirectedToHome.current = true;
-      setStep('home-selection');
-    }
-  }, [initialProduct, setStep]);
+  const progressIndex = getProgressIndex(currentStep);
 
   return (
     <div className="space-y-8">
@@ -156,13 +96,10 @@ export default function QuoteWizard({ initialVin, initialMileage, initialProduct
 
       {/* Active Step */}
       {currentStep === 'vehicle-info' && (
-        <VehicleInfoStep initialVin={initialVin} initialMileage={initialMileage} startedWithHome={isHomeFlow} />
+        <VehicleInfoStep initialVin={initialVin} initialMileage={initialMileage} />
       )}
       {currentStep === 'plan-selection' && <PlanSelectionStep />}
       {currentStep === 'bundle-prompt' && <BundlePrompt />}
-      {currentStep === 'home-selection' && (
-        <HomeSelectionStep isHomeOnly={initialProduct === 'home'} />
-      )}
       {currentStep === 'cart-review' && <CartReview />}
       {currentStep === 'checkout' && <CheckoutStep />}
       {currentStep === 'success' && <SuccessPage />}
