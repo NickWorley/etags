@@ -1,19 +1,19 @@
 import type { Metadata } from 'next';
-import { DM_Sans, DM_Serif_Display } from 'next/font/google';
+import { Roboto, Roboto_Slab } from 'next/font/google';
 import './globals.css';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 
-const dmSans = DM_Sans({
-  variable: '--font-dm-sans',
+const roboto = Roboto({
+  variable: '--font-roboto',
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
+  weight: ['300', '400', '500', '700'],
 });
 
-const dmSerif = DM_Serif_Display({
-  variable: '--font-dm-serif',
+const robotoSlab = Roboto_Slab({
+  variable: '--font-roboto-slab',
   subsets: ['latin'],
-  weight: '400',
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
 });
 
 export const metadata: Metadata = {
@@ -29,7 +29,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${dmSans.variable} ${dmSerif.variable}`}>
+    <html lang="en" className={`${roboto.variable} ${robotoSlab.variable}`}>
       <body className="min-h-screen bg-background font-sans antialiased">
         <Header />
         <main>{children}</main>
