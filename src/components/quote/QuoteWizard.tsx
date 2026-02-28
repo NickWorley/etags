@@ -59,7 +59,7 @@ export default function QuoteWizard({ initialVin, initialMileage }: QuoteWizardP
                         isCompleted
                           ? 'bg-success text-white'
                           : isCurrent
-                            ? 'bg-accent text-navy-950 shadow-lg shadow-accent/20'
+                            ? 'bg-accent text-white shadow-lg shadow-accent/20'
                             : 'bg-navy-100 text-navy-500'
                       }`}
                     >

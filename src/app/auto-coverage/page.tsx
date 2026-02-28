@@ -142,7 +142,7 @@ export default function AutoCoveragePage() {
               >
                 {/* Badge */}
                 {t.badge && (
-                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-accent px-4 py-1 text-xs font-bold text-navy-950 shadow-md">
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-accent px-4 py-1 text-xs font-bold text-white shadow-md">
                     {t.badge}
                   </span>
                 )}
@@ -197,7 +197,7 @@ export default function AutoCoveragePage() {
           </p>
           <Link
             href="/quote"
-            className="group mt-10 inline-flex items-center gap-2 rounded-xl bg-accent px-10 py-4 text-lg font-bold text-navy-950 shadow-lg shadow-accent/20 transition hover:bg-accent-hover hover:scale-105"
+            className="group mt-10 inline-flex items-center gap-2 rounded-xl bg-accent px-10 py-4 text-lg font-bold text-white shadow-lg shadow-accent/20 transition hover:bg-accent-hover hover:scale-105"
           >
             Get Your Free Quote
             <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />

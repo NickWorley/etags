@@ -64,7 +64,7 @@ export default function Header() {
             </a>
             <Link
               href="/quote"
-              className="rounded-lg bg-accent px-5 py-2 text-sm font-bold text-navy-950 shadow-md transition-all hover:bg-accent-hover hover:scale-105"
+              className="rounded-lg bg-accent px-5 py-2 text-sm font-bold text-white shadow-md transition-all hover:bg-accent-hover hover:scale-105"
             >
               Get Quote
             </Link>
@@ -118,7 +118,7 @@ export default function Header() {
               <Link
                 href="/quote"
                 onClick={() => setMobileOpen(false)}
-                className="mt-2 block rounded-lg bg-accent px-4 py-3 text-center text-sm font-bold text-navy-950 shadow-md transition-all hover:bg-accent-hover"
+                className="mt-2 block rounded-lg bg-accent px-4 py-3 text-center text-sm font-bold text-white shadow-md transition-all hover:bg-accent-hover"
               >
                 Get Quote
               </Link>
