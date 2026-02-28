@@ -57,8 +57,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(data);
   } catch (error) {
     console.error("Coverage rates error:", error);
+    const message = error instanceof Error ? error.message : String(error);
     return NextResponse.json(
-      { error: "Internal server error while fetching coverage rates" },
+      { error: "Internal server error while fetching coverage rates", message },
       { status: 500 }
     );
   }
