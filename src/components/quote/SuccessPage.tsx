@@ -5,7 +5,7 @@ import { formatCurrency } from '@/lib/constants';
 import { CheckCircle, Printer, Home } from 'lucide-react';
 
 export default function SuccessPage() {
-  const { vehicles, homeCoverage, getMasterPrice, amountPaidAtCheckout, reset } = useQuoteStore();
+  const { vehicles, getMasterPrice, amountPaidAtCheckout, reset } = useQuoteStore();
 
   const coveredVehicles = vehicles.filter((v) => v.vehicle && v.coverage && v.costs);
   /** Show the amount actually charged (after bundle discount / buydown), or master total if not set */
@@ -59,23 +59,6 @@ export default function SuccessPage() {
             </div>
           </div>
         ))}
-
-        {homeCoverage && (
-          <div className="border-b border-navy-100 pb-3">
-            <div className="flex justify-between">
-              <div>
-                <p className="font-semibold text-navy-900">{homeCoverage.coverageTitle}</p>
-                <p className="text-sm text-navy-500">{homeCoverage.homeSizeLabel}</p>
-                <p className="text-xs text-navy-500">
-                  {homeCoverage.duration} Year{homeCoverage.duration > 1 ? 's' : ''}
-                </p>
-              </div>
-              <span className="font-semibold text-navy-900">
-                {formatCurrency(homeCoverage.totalFinalPrice)}
-              </span>
-            </div>
-          </div>
-        )}
 
         <div className="flex justify-between pt-2">
           <span className="text-lg font-bold text-navy-900">Total Paid</span>
