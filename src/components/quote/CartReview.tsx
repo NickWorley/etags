@@ -4,29 +4,22 @@ import { useQuoteStore } from '@/store/quote-store';
 import { formatCurrency } from '@/lib/constants';
 import { ShoppingCart } from 'lucide-react';
 import VehicleCoverageSummary from './VehicleCoverageSummary';
-import HomeCoverageSummary from './HomeCoverageSummary';
 
 export default function CartReview() {
-  const { vehicles, homeCoverage, getMasterPrice, setStep, setVehiclePreview } = useQuoteStore();
+  const { vehicles, getMasterPrice, setStep, setVehiclePreview } = useQuoteStore();
 
   const masterTotal = getMasterPrice();
 
   // Filter vehicles that have a coverage selected
   const coveredVehicles = vehicles.filter((v) => v.vehicle && v.coverage);
 
-  // Bundle discount: 10% for 2+ vehicles (car bundle), 10% for home (home bundle); max 20%
+  // Bundle discount: 10% for 2+ vehicles
   const BUNDLE_DISCOUNT_PERCENT = 10;
-  const bundleDiscount = ((homeCoverage && coveredVehicles.length >=1) || (coveredVehicles.length >= 2)) ? BUNDLE_DISCOUNT_PERCENT : 0;
-  //const carBundleDiscount = coveredVehicles.length >= 2 ? BUNDLE_DISCOUNT_PERCENT : 0;
-  //const homeBundleDiscount = (homeCoverage && coveredVehicles.length >=1) ? BUNDLE_DISCOUNT_PERCENT : 0;
-  //const totalDiscountPercent = carBundleDiscount + homeBundleDiscount;
+  const bundleDiscount = coveredVehicles.length >= 2 ? BUNDLE_DISCOUNT_PERCENT : 0;
   const totalDiscountPercent = bundleDiscount;
   const discountAmount = masterTotal * (totalDiscountPercent / 100);
   const discountedTotal = masterTotal - discountAmount;
   const hasBundleDiscount = totalDiscountPercent > 0;
-
-
-
 
   async function handleReviewSub() {
     if (coveredVehicles.length > 0) {
@@ -81,13 +74,10 @@ export default function CartReview() {
       });
 
       setStep('checkout');
-    } else if (homeCoverage) {
-      // Standalone home coverage: no auto preview needed
-      setStep('checkout');
     }
   };
 
-  const canProceed = coveredVehicles.length > 0 || !!homeCoverage;
+  const canProceed = coveredVehicles.length > 0;
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
@@ -107,9 +97,6 @@ export default function CartReview() {
           />
         ) : null
       )}
-
-      {/* Home Coverage */}
-      {homeCoverage && <HomeCoverageSummary homeCoverage={homeCoverage} />}
 
       {/* Master Total */}
       <div className="rounded-2xl bg-navy-950 p-6 shadow-lg">
@@ -137,7 +124,7 @@ export default function CartReview() {
 
       {/* Actions */}
       <div className="flex flex-col gap-3 sm:flex-row">
-        {(!homeCoverage || coveredVehicles.length <= 1) && (
+        {coveredVehicles.length < 2 && (
           <button
             onClick={() => setStep('bundle-prompt')}
             className="flex-1 rounded-lg border border-navy-100 bg-white px-6 py-3 text-sm font-semibold text-navy-700 transition hover:bg-navy-50"
@@ -145,12 +132,6 @@ export default function CartReview() {
             Add More Coverage
           </button>
         )}
-        {/* <button
-          onClick={() => setStep('bundle-prompt')}
-          className="flex-1 rounded-lg border border-navy-100 bg-white px-6 py-3 text-sm font-semibold text-navy-700 transition hover:bg-navy-50"
-        >
-          Add More Coverage
-        </button> */}
         <button
           onClick={handleReviewSub}
           disabled={!canProceed}
