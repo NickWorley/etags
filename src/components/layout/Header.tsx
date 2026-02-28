@@ -9,7 +9,6 @@ import { Phone, Menu, X } from 'lucide-react';
 const navLinks = [
   { label: 'Home', href: '/' },
   { label: 'Auto Coverage', href: '/auto-coverage' },
-  { label: 'Home Coverage', href: '/home-coverage' },
   { label: 'About', href: '/about' },
   { label: 'FAQ', href: '/faq' },
   { label: 'Contact', href: '/contact' },

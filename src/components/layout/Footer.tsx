@@ -74,14 +74,6 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/home-coverage"
-                  className="text-sm text-navy-500 hover:text-navy-100 transition-colors"
-                >
-                  Home Coverage
-                </Link>
-              </li>
-              <li>
-                <Link
                   href="/quote"
                   className="text-sm text-navy-500 hover:text-navy-100 transition-colors"
                 >

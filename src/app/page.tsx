@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Shield, Zap, Car, Home } from 'lucide-react';
+import { Shield, Zap, Car, MapPin } from 'lucide-react';
 import HeroSection from '@/components/landing/HeroSection';
 import QuoteEntryForm from '@/components/landing/QuoteEntryForm';
 import TrustSignals from '@/components/landing/TrustSignals';
@@ -19,14 +19,14 @@ export default function HomePage() {
           </h2>
           <div className="mx-auto mt-3 h-1 w-16 rounded-full bg-accent" />
           <p className="mx-auto mt-8 max-w-3xl text-lg leading-relaxed text-navy-600">
-            Protecting your most valuable assets&mdash;your home and your vehicle&mdash;is a critical
+            Protecting your most valuable asset&mdash;your vehicle&mdash;is a critical
             aspect of responsible ownership. Our diverse range of{' '}
             <span className="font-semibold text-navy-900 underline decoration-accent/60 underline-offset-4">
               coverage options
             </span>{' '}
-            are designed to provide you with unparalleled peace of mind. We understand that your home
-            and vehicle represent significant investments, and our goal is to help you safeguard them
-            against unforeseen events, ensuring their longevity and your continued security.
+            are designed to provide you with unparalleled peace of mind. We understand that your
+            vehicle represents a significant investment, and our goal is to help you safeguard it
+            against unforeseen events, ensuring its longevity and your continued security.
           </p>
           <Link
             href="/quote"
@@ -40,7 +40,7 @@ export default function HomePage() {
       {/* Feature Highlights */}
       <section className="bg-navy-50 py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {/* Customizable Plans */}
             <div className="card-lift rounded-2xl bg-white p-6 shadow-md">
               <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-accent-muted">
@@ -77,15 +77,15 @@ export default function HomePage() {
               </p>
             </div>
 
-            {/* Home Coverage */}
+            {/* Nationwide Network */}
             <div className="card-lift rounded-2xl bg-white p-6 shadow-md">
               <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-accent-muted">
-                <Home className="h-6 w-6 text-accent" />
+                <MapPin className="h-6 w-6 text-accent" />
               </div>
-              <h3 className="text-lg font-bold text-navy-900">Home Coverage</h3>
+              <h3 className="text-lg font-bold text-navy-900">Nationwide Network</h3>
               <p className="mt-2 text-sm leading-relaxed text-navy-600">
-                Protect your home systems and appliances with customizable plans built for every
-                budget.
+                Access to ASE-Certified mechanics at thousands of repair facilities across the
+                country.
               </p>
             </div>
           </div>
