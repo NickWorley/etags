@@ -99,6 +99,23 @@ export async function POST(request: NextRequest) {
       });
     }
 
+    // Guard: limit conversation length to prevent token abuse
+    if (messages.length > 30) {
+      return new Response(
+        'This conversation has gotten quite long. Please refresh the page to start a new chat.',
+        { headers: { 'Content-Type': 'text/plain; charset=utf-8' } }
+      );
+    }
+
+    // Guard: limit individual message length (500 chars is plenty for VSC questions)
+    const lastMessage = messages[messages.length - 1];
+    if (lastMessage?.content && lastMessage.content.length > 500) {
+      return new Response(
+        'Your message is too long. Please keep questions brief and focused on eTags coverage.',
+        { headers: { 'Content-Type': 'text/plain; charset=utf-8' } }
+      );
+    }
+
     const apiMessages: Anthropic.MessageParam[] = messages.map((m: { role: string; content: string }) => ({
       role: m.role as 'user' | 'assistant',
       content: m.content,
