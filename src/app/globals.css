@@ -118,3 +118,12 @@ html {
 ::-webkit-scrollbar-thumb:hover {
   background: #5A7EB5;
 }
+
+/* ─── Chat bubble pulse ─── */
+@keyframes pulseSubtle {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0, 174, 71, 0.4); }
+  50% { box-shadow: 0 0 0 12px rgba(0, 174, 71, 0); }
+}
+.animate-pulse-subtle {
+  animation: pulseSubtle 2s ease-in-out 3;
+}
